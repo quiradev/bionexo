@@ -1,0 +1,21 @@
+python-dotenv
+
+openai
+
+pillow
+pandas
+plotly
+pydantic
+
+fastapi
+
+# Repository
+requests
+aiohttp
+openfoodfacts
+
+# Database
+pymongo
+
+# Webapp framework
+streamlit
