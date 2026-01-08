@@ -9,6 +9,8 @@ pydantic
 
 fastapi
 
+langdetect
+
 # Repository
 requests
 aiohttp

@@ -1,0 +1,908 @@
+{
+  "nutrients": [
+    {
+      "id": "energy-kj",
+      "name": "Energía (kJ)",
+      "important": true,
+      "display_in_edit_form": true,
+      "unit": "kj"
+    },
+    {
+      "name": "Energía (kcal)",
+      "id": "energy-kcal",
+      "important": true,
+      "display_in_edit_form": true,
+      "unit": "kcal"
+    },
+    {
+      "important": true,
+      "display_in_edit_form": false,
+      "nutrients": [
+        {
+          "display_in_edit_form": false,
+          "name": "Energy from fat",
+          "important": false,
+          "id": "energy-from-fat",
+          "unit": "kj"
+        }
+      ],
+      "unit": "kj",
+      "name": "Energía",
+      "id": "energy"
+    },
+    {
+      "id": "fat",
+      "name": "Grasas",
+      "important": true,
+      "display_in_edit_form": true,
+      "unit": "g",
+      "nutrients": [
+        {
+          "important": true,
+          "display_in_edit_form": true,
+          "unit": "g",
+          "nutrients": [
+            {
+              "display_in_edit_form": false,
+              "important": false,
+              "name": "Ácido butírico",
+              "id": "butyric-acid",
+              "unit": "g"
+            },
+            {
+              "unit": "g",
+              "name": "Ácido caproico",
+              "important": false,
+              "id": "caproic-acid",
+              "display_in_edit_form": false
+            },
+            {
+              "display_in_edit_form": false,
+              "name": "Ácido caprílico",
+              "id": "caprylic-acid",
+              "important": false,
+              "unit": "g"
+            },
+            {
+              "unit": "g",
+              "name": "Ácido cáprico",
+              "id": "capric-acid",
+              "important": false,
+              "display_in_edit_form": false
+            },
+            {
+              "unit": "g",
+              "name": "Ácido láurico",
+              "id": "lauric-acid",
+              "important": false,
+              "display_in_edit_form": false
+            },
+            {
+              "unit": "g",
+              "display_in_edit_form": false,
+              "important": false,
+              "name": "Ácido mirístico",
+              "id": "myristic-acid"
+            },
+            {
+              "display_in_edit_form": false,
+              "id": "palmitic-acid",
+              "name": "Ácido palmítico",
+              "important": false,
+              "unit": "g"
+            },
+            {
+              "display_in_edit_form": false,
+              "name": "Ácido esteárico",
+              "important": false,
+              "id": "stearic-acid",
+              "unit": "g"
+            },
+            {
+              "display_in_edit_form": false,
+              "name": "Ácido araquídico",
+              "id": "arachidic-acid",
+              "important": false,
+              "unit": "g"
+            },
+            {
+              "unit": "g",
+              "name": "Ácido behénico",
+              "id": "behenic-acid",
+              "important": false,
+              "display_in_edit_form": false
+            },
+            {
+              "unit": "g",
+              "name": "Ácido lignocérico",
+              "important": false,
+              "id": "lignoceric-acid",
+              "display_in_edit_form": false
+            },
+            {
+              "name": "Ácido cerótico",
+              "id": "cerotic-acid",
+              "important": false,
+              "display_in_edit_form": false,
+              "unit": "g"
+            },
+            {
+              "display_in_edit_form": false,
+              "name": "Ácido montánico",
+              "id": "montanic-acid",
+              "important": false,
+              "unit": "g"
+            },
+            {
+              "unit": "g",
+              "display_in_edit_form": false,
+              "name": "Ácido melísico",
+              "important": false,
+              "id": "melissic-acid"
+            }
+          ],
+          "id": "saturated-fat",
+          "name": "Grasas saturadas"
+        },
+        {
+          "display_in_edit_form": false,
+          "important": false,
+          "nutrients": [
+            {
+              "name": "Grasas monoinsaturadas",
+              "important": false,
+              "id": "monounsaturated-fat",
+              "display_in_edit_form": false,
+              "unit": "g"
+            },
+            {
+              "important": false,
+              "name": "Ácidos grasos Omega 9",
+              "id": "omega-9-fat",
+              "display_in_edit_form": false,
+              "unit": "mg"
+            },
+            {
+              "unit": "g",
+              "name": "Grasas poliinsaturadas",
+              "important": false,
+              "id": "polyunsaturated-fat",
+              "display_in_edit_form": false
+            },
+            {
+              "id": "omega-3-fat",
+              "name": "Ácidos grasos Omega 3",
+              "important": false,
+              "display_in_edit_form": false,
+              "unit": "mg"
+            },
+            {
+              "important": false,
+              "name": "Ácidos grasos Omega 6",
+              "id": "omega-6-fat",
+              "display_in_edit_form": false,
+              "unit": "mg"
+            },
+            {
+              "unit": "g",
+              "display_in_edit_form": false,
+              "id": "alpha-linolenic-acid",
+              "name": "Ácido alfa-linolénico",
+              "important": false
+            },
+            {
+              "unit": "g",
+              "name": "Ácido eicosapentaenoico",
+              "id": "eicosapentaenoic-acid",
+              "important": false,
+              "display_in_edit_form": false
+            },
+            {
+              "unit": "g",
+              "display_in_edit_form": false,
+              "important": false,
+              "name": "Ácido docosahexaenoico",
+              "id": "docosahexaenoic-acid"
+            },
+            {
+              "important": false,
+              "name": "Ácido linoleico",
+              "id": "linoleic-acid",
+              "display_in_edit_form": false,
+              "unit": "g"
+            },
+            {
+              "unit": "g",
+              "name": "Ácido araquidónico",
+              "important": false,
+              "id": "arachidonic-acid",
+              "display_in_edit_form": false
+            },
+            {
+              "unit": "g",
+              "important": false,
+              "name": "Ácido gamma-linolénico",
+              "id": "gamma-linolenic-acid",
+              "display_in_edit_form": false
+            },
+            {
+              "unit": "g",
+              "display_in_edit_form": false,
+              "name": "Ácido dihomo-gamma-linolénico",
+              "id": "dihomo-gamma-linolenic-acid",
+              "important": false
+            },
+            {
+              "display_in_edit_form": false,
+              "name": "Ácido oleico",
+              "important": false,
+              "id": "oleic-acid",
+              "unit": "g"
+            },
+            {
+              "name": "Ácido elaídico",
+              "id": "elaidic-acid",
+              "important": false,
+              "display_in_edit_form": false,
+              "unit": "g"
+            },
+            {
+              "unit": "g",
+              "important": false,
+              "name": "Ácido gondoico",
+              "id": "gondoic-acid",
+              "display_in_edit_form": false
+            },
+            {
+              "unit": "g",
+              "name": "Ácido Mead",
+              "id": "mead-acid",
+              "important": false,
+              "display_in_edit_form": false
+            },
+            {
+              "unit": "g",
+              "display_in_edit_form": false,
+              "name": "Ácido erúcico",
+              "id": "erucic-acid",
+              "important": false
+            },
+            {
+              "unit": "g",
+              "name": "Ácido nervónico",
+              "id": "nervonic-acid",
+              "important": false,
+              "display_in_edit_form": false
+            }
+          ],
+          "unit": "g",
+          "id": "unsaturated-fat",
+          "name": "Unsaturated fat"
+        },
+        {
+          "display_in_edit_form": false,
+          "name": "Grasas trans",
+          "important": false,
+          "id": "trans-fat",
+          "unit": "g"
+        },
+        {
+          "id": "cholesterol",
+          "name": "Colesterol",
+          "important": false,
+          "display_in_edit_form": false,
+          "unit": "mg"
+        }
+      ]
+    },
+    {
+      "display_in_edit_form": true,
+      "important": true,
+      "unit": "g",
+      "nutrients": [
+        {
+          "name": "Azúcares",
+          "id": "sugars",
+          "display_in_edit_form": true,
+          "important": true,
+          "unit": "g",
+          "nutrients": [
+            {
+              "name": "Azucares añadidos",
+              "id": "added-sugars",
+              "important": false,
+              "display_in_edit_form": false,
+              "unit": "g"
+            },
+            {
+              "unit": "g",
+              "display_in_edit_form": false,
+              "important": false,
+              "name": "Sacarosa",
+              "id": "sucrose"
+            },
+            {
+              "unit": "g",
+              "display_in_edit_form": false,
+              "name": "Glucosa",
+              "important": false,
+              "id": "glucose"
+            },
+            {
+              "unit": "g",
+              "display_in_edit_form": false,
+              "important": false,
+              "name": "Fructosa",
+              "id": "fructose"
+            },
+            {
+              "display_in_edit_form": false,
+              "important": false,
+              "name": "zz:Galactose",
+              "id": "galactose",
+              "unit": "g"
+            },
+            {
+              "unit": "g",
+              "name": "Lactosa",
+              "important": false,
+              "id": "lactose",
+              "display_in_edit_form": false
+            },
+            {
+              "display_in_edit_form": false,
+              "name": "Maltosa",
+              "id": "maltose",
+              "important": false,
+              "unit": "g"
+            },
+            {
+              "display_in_edit_form": false,
+              "name": "Maltodextrinas",
+              "important": false,
+              "id": "maltodextrins",
+              "unit": "g"
+            }
+          ]
+        },
+        {
+          "unit": "g",
+          "display_in_edit_form": false,
+          "important": false,
+          "name": "Psicosa",
+          "id": "psicose"
+        },
+        {
+          "display_in_edit_form": false,
+          "name": "Almidón",
+          "important": false,
+          "id": "starch",
+          "unit": "g"
+        },
+        {
+          "id": "polyols",
+          "name": "Azúcares alcohólicos (Polialcoholes)",
+          "display_in_edit_form": false,
+          "important": false,
+          "unit": "g",
+          "nutrients": [
+            {
+              "display_in_edit_form": false,
+              "important": false,
+              "name": "Eritritol",
+              "id": "erythritol",
+              "unit": "g"
+            },
+            {
+              "important": false,
+              "name": "Isomalt",
+              "id": "isomalt",
+              "display_in_edit_form": false,
+              "unit": "g"
+            },
+            {
+              "unit": "g",
+              "important": false,
+              "name": "Maltitol",
+              "id": "maltitol",
+              "display_in_edit_form": false
+            },
+            {
+              "unit": "g",
+              "display_in_edit_form": false,
+              "name": "Sorbitol",
+              "id": "sorbitol",
+              "important": false
+            }
+          ]
+        }
+      ],
+      "name": "Hidratos de carbono",
+      "id": "carbohydrates"
+    },
+    {
+      "name": "Fibra alimentaria",
+      "id": "fiber",
+      "unit": "g",
+      "nutrients": [
+        {
+          "name": "Fibra soluble",
+          "id": "soluble-fiber",
+          "display_in_edit_form": false,
+          "important": false,
+          "unit": "g",
+          "nutrients": [
+            {
+              "unit": "g",
+              "id": "polydextrose",
+              "name": "Polidextrosa",
+              "important": false,
+              "display_in_edit_form": false
+            }
+          ]
+        },
+        {
+          "unit": "g",
+          "id": "insoluble-fiber",
+          "name": "Fibra insoluble",
+          "important": false,
+          "display_in_edit_form": false
+        }
+      ],
+      "important": true,
+      "display_in_edit_form": true
+    },
+    {
+      "id": "proteins",
+      "name": "Proteínas",
+      "unit": "g",
+      "nutrients": [
+        {
+          "unit": "g",
+          "display_in_edit_form": false,
+          "id": "casein",
+          "name": "Caseína",
+          "important": false
+        },
+        {
+          "display_in_edit_form": false,
+          "important": false,
+          "name": "Serum proteins",
+          "id": "serum-proteins",
+          "unit": "g"
+        },
+        {
+          "name": "Nucleotides",
+          "id": "nucleotides",
+          "important": false,
+          "display_in_edit_form": false,
+          "unit": "g"
+        }
+      ],
+      "important": true,
+      "display_in_edit_form": true
+    },
+    {
+      "important": true,
+      "display_in_edit_form": true,
+      "nutrients": [
+        {
+          "unit": "g",
+          "name": "Sal añadida",
+          "id": "added-salt",
+          "important": false,
+          "display_in_edit_form": false
+        }
+      ],
+      "unit": "g",
+      "name": "Sal",
+      "id": "salt"
+    },
+    {
+      "display_in_edit_form": true,
+      "name": "Sodio",
+      "important": false,
+      "id": "sodium",
+      "unit": "g"
+    },
+    {
+      "unit": "% vol",
+      "display_in_edit_form": true,
+      "name": "Alcohol",
+      "important": false,
+      "id": "alcohol"
+    },
+    {
+      "unit": "µg",
+      "display_in_edit_form": false,
+      "id": "vitamin-a",
+      "name": "Vitamina A (Retinol)",
+      "important": false
+    },
+    {
+      "name": "Beta caroteno",
+      "id": "beta-carotene",
+      "important": false,
+      "display_in_edit_form": false,
+      "unit": "g"
+    },
+    {
+      "unit": "µg",
+      "display_in_edit_form": false,
+      "name": "Vitamina D",
+      "important": false,
+      "id": "vitamin-d"
+    },
+    {
+      "unit": "mg",
+      "display_in_edit_form": false,
+      "id": "vitamin-e",
+      "name": "Vitamina E (a-tocoferol)",
+      "important": false
+    },
+    {
+      "id": "vitamin-k",
+      "name": "Vitamina K",
+      "important": false,
+      "display_in_edit_form": false,
+      "unit": "µg"
+    },
+    {
+      "display_in_edit_form": false,
+      "name": "Vitamina C (Ácido ascórbico)",
+      "id": "vitamin-c",
+      "important": false,
+      "unit": "mg"
+    },
+    {
+      "unit": "mg",
+      "name": "Vitamina B1 (Tiamina)",
+      "id": "vitamin-b1",
+      "important": false,
+      "display_in_edit_form": false
+    },
+    {
+      "unit": "mg",
+      "name": "Vitamina B2 (Riboflavina)",
+      "id": "vitamin-b2",
+      "important": false,
+      "display_in_edit_form": false
+    },
+    {
+      "display_in_edit_form": false,
+      "name": "Vitamina B3",
+      "id": "vitamin-pp",
+      "important": false,
+      "unit": "mg"
+    },
+    {
+      "important": false,
+      "name": "Vitamina B6 (Piridoxina)",
+      "id": "vitamin-b6",
+      "display_in_edit_form": false,
+      "unit": "mg"
+    },
+    {
+      "name": "Vitamina B9 (Ácido fólico)",
+      "important": false,
+      "id": "vitamin-b9",
+      "display_in_edit_form": false,
+      "unit": "µg"
+    },
+    {
+      "important": false,
+      "name": "Folates (total folates)",
+      "id": "folates",
+      "display_in_edit_form": false,
+      "unit": "µg"
+    },
+    {
+      "id": "vitamin-b12",
+      "name": "Vitamina B12 (Cianocobalamina)",
+      "important": false,
+      "display_in_edit_form": false,
+      "unit": "µg"
+    },
+    {
+      "display_in_edit_form": false,
+      "name": "Vitamina B7 (Biotina)",
+      "important": false,
+      "id": "biotin",
+      "unit": "µg"
+    },
+    {
+      "display_in_edit_form": false,
+      "name": "Vitamina B5 (Ácido pantoténico)",
+      "id": "pantothenic-acid",
+      "important": false,
+      "unit": "mg"
+    },
+    {
+      "unit": "mg",
+      "name": "Sílice",
+      "id": "silica",
+      "important": false,
+      "display_in_edit_form": false
+    },
+    {
+      "unit": "mg",
+      "id": "bicarbonate",
+      "name": "Bicarbonato",
+      "important": false,
+      "display_in_edit_form": false
+    },
+    {
+      "name": "Potasio",
+      "important": false,
+      "id": "potassium",
+      "display_in_edit_form": false,
+      "unit": "mg"
+    },
+    {
+      "unit": "mg",
+      "display_in_edit_form": false,
+      "id": "chloride",
+      "name": "Cloro",
+      "important": false
+    },
+    {
+      "display_in_edit_form": false,
+      "name": "Calcio",
+      "id": "calcium",
+      "important": false,
+      "unit": "mg"
+    },
+    {
+      "display_in_edit_form": false,
+      "important": false,
+      "name": "Fósforo",
+      "id": "phosphorus",
+      "unit": "mg"
+    },
+    {
+      "unit": "mg",
+      "display_in_edit_form": false,
+      "important": false,
+      "name": "Hierro",
+      "id": "iron"
+    },
+    {
+      "important": false,
+      "name": "Magnesio",
+      "id": "magnesium",
+      "display_in_edit_form": false,
+      "unit": "mg"
+    },
+    {
+      "important": false,
+      "name": "Zinc",
+      "id": "zinc",
+      "display_in_edit_form": false,
+      "unit": "mg"
+    },
+    {
+      "unit": "mg",
+      "display_in_edit_form": false,
+      "important": false,
+      "name": "Cobre",
+      "id": "copper"
+    },
+    {
+      "unit": "mg",
+      "display_in_edit_form": false,
+      "id": "manganese",
+      "name": "Manganeso",
+      "important": false
+    },
+    {
+      "unit": "mg",
+      "important": false,
+      "name": "Flúor",
+      "id": "fluoride",
+      "display_in_edit_form": false
+    },
+    {
+      "unit": "µg",
+      "display_in_edit_form": false,
+      "name": "Selenio",
+      "id": "selenium",
+      "important": false
+    },
+    {
+      "unit": "µg",
+      "name": "Cromo",
+      "id": "chromium",
+      "important": false,
+      "display_in_edit_form": false
+    },
+    {
+      "unit": "µg",
+      "display_in_edit_form": false,
+      "id": "molybdenum",
+      "name": "Molibdeno",
+      "important": false
+    },
+    {
+      "display_in_edit_form": false,
+      "name": "Yodo",
+      "important": false,
+      "id": "iodine",
+      "unit": "µg"
+    },
+    {
+      "unit": "mg",
+      "name": "Cafeina",
+      "important": false,
+      "id": "caffeine",
+      "display_in_edit_form": false
+    },
+    {
+      "id": "taurine",
+      "name": "Taurina",
+      "important": false,
+      "display_in_edit_form": false,
+      "unit": "g"
+    },
+    {
+      "unit": "mg",
+      "name": "MSM",
+      "id": "methylsulfonylmethane",
+      "important": false,
+      "display_in_edit_form": false
+    },
+    {
+      "unit": "",
+      "name": "PH",
+      "important": false,
+      "id": "ph",
+      "display_in_edit_form": false
+    },
+    {
+      "unit": "%",
+      "id": "fruits-vegetables-nuts",
+      "name": "Frutas‚ verduras y nueces",
+      "important": false,
+      "display_in_edit_form": false
+    },
+    {
+      "id": "fruits-vegetables-nuts-dried",
+      "name": "Fruits‚ vegetables and nuts - dried",
+      "important": false,
+      "display_in_edit_form": false,
+      "unit": "%"
+    },
+    {
+      "name": "Frutas‚ verduras y nueces (estimación de la lista de ingredientes)",
+      "id": "fruits-vegetables-nuts-estimate",
+      "important": false,
+      "display_in_edit_form": false,
+      "unit": "%"
+    },
+    {
+      "unit": "%",
+      "display_in_edit_form": false,
+      "name": "Relación tejido conjuntivo/proteínas de carne (máximo)",
+      "id": "collagen-meat-protein-ratio",
+      "important": false
+    },
+    {
+      "display_in_edit_form": false,
+      "name": "Cacao (mínimo)",
+      "id": "cocoa",
+      "important": false,
+      "unit": "%"
+    },
+    {
+      "name": "Chlorophyl",
+      "id": "chlorophyl",
+      "important": false,
+      "display_in_edit_form": false,
+      "unit": "g"
+    },
+    {
+      "important": false,
+      "name": "Huella de carbono",
+      "id": "carbon-footprint",
+      "display_in_edit_form": false,
+      "unit": "g"
+    },
+    {
+      "unit": "g",
+      "name": "Carbon footprint from meat or fish",
+      "important": false,
+      "id": "carbon-footprint-from-meat-or-fish",
+      "display_in_edit_form": false
+    },
+    {
+      "unit": "",
+      "important": false,
+      "name": "Nutrition score - France",
+      "id": "nutrition-score-fr",
+      "display_in_edit_form": false
+    },
+    {
+      "unit": "",
+      "id": "nutrition-score-uk",
+      "name": "Nutrition score - UK",
+      "important": false,
+      "display_in_edit_form": false
+    },
+    {
+      "unit": "",
+      "display_in_edit_form": false,
+      "name": "Índice glucémico",
+      "important": false,
+      "id": "glycemic-index"
+    },
+    {
+      "unit": "mmol/l",
+      "name": "Dureza del agua",
+      "id": "water-hardness",
+      "important": false,
+      "display_in_edit_form": false
+    },
+    {
+      "unit": "g",
+      "display_in_edit_form": false,
+      "name": "Colina",
+      "id": "choline",
+      "important": false
+    },
+    {
+      "id": "phylloquinone",
+      "name": "Filoquinona",
+      "important": false,
+      "display_in_edit_form": false,
+      "unit": "g"
+    },
+    {
+      "unit": "g",
+      "display_in_edit_form": false,
+      "name": "Beta-glucano",
+      "important": false,
+      "id": "beta-glucan"
+    },
+    {
+      "unit": "g",
+      "id": "inositol",
+      "name": "Inositol",
+      "important": false,
+      "display_in_edit_form": false
+    },
+    {
+      "unit": "g",
+      "display_in_edit_form": false,
+      "name": "Carnitina",
+      "id": "carnitine",
+      "important": false
+    },
+    {
+      "display_in_edit_form": false,
+      "important": false,
+      "name": "Sulfato",
+      "id": "sulphate",
+      "unit": "mg"
+    },
+    {
+      "unit": "mg",
+      "display_in_edit_form": false,
+      "important": false,
+      "name": "Nitrato",
+      "id": "nitrate"
+    },
+    {
+      "unit": "% vol",
+      "important": false,
+      "name": "Acideze",
+      "id": "acidity",
+      "display_in_edit_form": false
+    },
+    {
+      "unit": "g",
+      "display_in_edit_form": false,
+      "important": false,
+      "name": "Hidratos de carbono totales (incluye fibra)",
+      "id": "carbohydrates-total"
+    }
+  ]
+}

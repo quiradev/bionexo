@@ -1,13 +1,15 @@
 import os
 import time
+import requests
 from typing import Dict, Any, Optional, List
 from openfoodfacts import API, APIVersion, Country, Environment as OFFEnvironment, Flavor
 from openfoodfacts import utils as off_utils
 from openfoodfacts.api import send_get_request
 
 from bionexo.application.definitions import Environment
+from bionexo.infraestructure.utils.functions import predict_language
 from bionexo.repository.config import RepositoryConfig
-from bionexo.repository.entity.open_food_facts import SearchAdvanceParams
+from bionexo.repository.entity.open_food_facts import ProductSearchAdvanceParams
 
 PRODUCT_RATE = 'product'
 SEARCH_RATE = 'search'
@@ -88,14 +90,18 @@ class OpenFoodFactsAPI:
             user_agent = f'{user_agent} ({OPENFOODFACTS_EMAIL})'
 
         if config.environment == Environment.DEV:
-            off_environment = OFFEnvironment.test
-        else:
             off_environment = OFFEnvironment.net
+            username = "off"
+            password = "off"
+        else:
+            off_environment = OFFEnvironment.org
+            username = None
+            password = None
 
         self.driver = API(
             user_agent=user_agent,
-            username=None,
-            password=None,
+            username=username,
+            password=password,
             country=Country.es,
             flavor=Flavor.off,
             version=APIVersion.v2,
@@ -130,12 +136,9 @@ class OpenFoodFactsAPI:
         """
         Busca productos por nombre o términos.
         """
-
         
         # v1
         response = self.driver.product.text_search(query, page=page, page_size=page_size, sort_by='unique_scans_n')
-        
-
 
         products = [self._parse_product(p) for p in response.get('products', []) if p]
         return {
@@ -148,7 +151,7 @@ class OpenFoodFactsAPI:
     @check_search_rate
     def search_products_advanced(
             self,
-            params: SearchAdvanceParams = None,
+            params: ProductSearchAdvanceParams = None,
             page: int = 1,
             page_size: int = 20,
     
@@ -193,62 +196,135 @@ class OpenFoodFactsAPI:
         # saturated-fat_100g=1 products where saturated fat per 100g is exactly 10g
         # salt_prepared_serving<0.1 products where salt per serving for prepared product is less than 0.1g
 
+        query_params = params.get_params_dict()
+        if page:
+            query_params['page'] = page
+        if page_size:
+            query_params['page_size'] = page_size
 
-        
         url = f"{self.driver.product.base_url}/api/{self.driver.product.api_config.version.value}/search"
-        params = {
+        try:
+            products_paged = send_get_request(
+                url=url, api_config=self.api_config,
+                params=query_params,
+                return_none_on_404=True
+            )
+        except (
+            requests.exceptions.ConnectionError,
+            requests.exceptions.SSLError,
+            requests.exceptions.Timeout,
+        ) as e:
+            raise RuntimeError(
+                f"Unable to get suggestions: error during HTTP request: {e}"
+            )
+        # {
+        #   "count": 0,
+        #   "page": 24,
+        #   "page_count": 0,
+        #   "page_size": 24,
+        #   "products": [],
+        #   "skip": 552
+        # }
+        return products_paged
 
+    @check_search_rate
+    def get_suggestions(self, term: str, tagtype: str):
+        """
+        For example , Dave is looking for packaging_shapes that contain the term "fe", all packaging_shapes containing "fe" will be returned. This is useful if you have a search in your application, for a specific product field.
+        
+        :param self: Description
+        :param term: Description
+        :type term: str
+        :param tagtype: Description
+        :type tagtype: str
+        """
+        url = f"{self.driver.product.base_url}/cgi/suggest.pl"
+        query_params = {
+            'tagtype': tagtype,
+            'term': term
         }
-        return send_get_request(
-            url=url, api_config=self.api_config,
-            params=params,
-            return_none_on_404=True
-        )
+        try:
+            suggestions = send_get_request(
+                url=url, api_config=self.api_config,
+                params=query_params,
+                return_none_on_404=True
+            )
+        except (
+            requests.exceptions.ConnectionError,
+            requests.exceptions.SSLError,
+            requests.exceptions.Timeout,
+        ) as e:
+            raise RuntimeError(
+                f"Unable to get suggestions: error during HTTP request: {e}"
+            )
+
+        return suggestions
+    
+    @check_product_rate
+    def parse_ingredients(self, ingredients_text: str) -> list[Dict[str, Any]]:
+        """
+        Parsea el texto de ingredientes para extraer componentes.
+        """
+        lang_codes = predict_language(ingredients_text)
+        top_lang_code = lang_codes[0]['lang'] if lang_codes else 'en'
+        ingredients_off_data = self.driver.product.parse_ingredients(ingredients_text, lang=top_lang_code)
+
+        # {
+        #     "ciqual_food_code": "22000",
+        #     "ecobalyse_code": "egg-indoor-code3",
+        #     "id": "en:egg",
+        #     "is_in_taxonomy": 1,
+        #     "percent_estimate": 66.6666666666667,
+        #     "percent_max": 100,
+        #     "percent_min": 33.3333333333333,
+        #     "text": "Huevos",
+        #     "vegan": "no",
+        #     "vegetarian": "yes"
+        # },
+        # {
+        #     "ciqual_proxy_food_code": "19051",
+        #     "ecobalyse_code": "8f3863e7-f981-4367-90a2-e1aaa096a6e0",
+        #     "id": "en:milk",
+        #     "is_in_taxonomy": 1,
+        #     "percent_estimate": 16.6666666666667,
+        #     "percent_max": 50,
+        #     "percent_min": 0,
+        #     "text": "leche",
+        #     "vegan": "no",
+        #     "vegetarian": "yes"
+        # },
+        # {
+        #     "ciqual_food_code": "9310",
+        #     "id": "en:oat",
+        #     "is_in_taxonomy": 1,
+        #     "percent_estimate": 16.6666666666667,
+        #     "percent_max": 33.3333333333333,
+        #     "percent_min": 0,
+        #     "text": "avena",
+        #     "vegan": "yes",
+        #     "vegetarian": "yes"
+        # }
+
+        return ingredients_off_data
 
     def get_by_facets(self, query: Dict[str, str], page: int = 1, locale: str = 'world') -> List[Dict[str, Any]]:
         """
         Retorna productos para un conjunto de facets.
         """
-        path = []
-        keys = sorted(query.keys())
-        for key in keys:
-            path.append(key)
-            path.append(query[key])
-        url = off_utils.build_url(geography=locale, resource_type=path, parameters=str(page))
-        response = self.driver.get(url[len(self.driver.config['base_url']):])  # Remover base_url ya que driver lo añade
-        return [self._parse_product(p) for p in response.get('products', [])]
+        ...
 
     def add_new_product(self, post_data: Dict[str, Any], locale: str = 'world') -> Dict[str, Any]:
         """
         Agrega un nuevo producto a la base de datos de OFF.
         """
-        if not post_data.get('code') or not post_data.get('product_name'):
-            raise ValueError('code or product_name not found!')
-        url = off_utils.build_url(geography='world', service='cgi', resource_type='product_jqm2.pl')
-        endpoint = url[len(self.driver.config['base_url']):]
-        return self.driver.post(endpoint, data=post_data)
+        ...
 
     def upload_image(self, code: str, imagefield: str, img_path: str) -> Dict[str, Any]:
         """
         Sube una nueva imagen para un producto.
         imagefield: 'front', 'ingredients', 'nutrition'
         """
-        if imagefield not in ["front", "ingredients", "nutrition"]:
-            raise ValueError("Imagefield not valid!")
-        url = off_utils.build_url(service='cgi', resource_type='product_image_upload.pl')
-        endpoint = url[len(self.driver.config['base_url']):]
-        files = {f"imgupload_{imagefield}": open(img_path, 'rb')}
-        data = {'code': code, 'imagefield': imagefield}
-        return self.driver.post(endpoint, data=data, files=files)
-
-    def advanced_search(self, post_query: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Realiza una búsqueda avanzada.
-        """
-        post_query['json'] = '1'
-        url = off_utils.build_url(service='cgi', resource_type='search.pl', parameters=post_query)
-        endpoint = url[len(self.driver.config['base_url']):]
-        return self.driver.get(endpoint)
+        ...
     
     def _parse_product(self, product_data: Dict[str, Any]) -> Dict[str, Any]:
         """

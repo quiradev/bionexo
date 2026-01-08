@@ -1,10 +1,9 @@
-import datetime
+from pydantic import BaseModel, Field
 
-class Intake:
-    def __init__(self, food_name, quantity, kcal, timestamp, feeling=None, bathroom=None):
-        self.food_name = food_name
-        self.quantity = quantity
-        self.kcal = kcal
-        self.timestamp = timestamp
-        self.feeling = feeling  # Después de comer
-        self.bathroom = bathroom  # Info de baño
+class Intake(BaseModel):
+    food_name: str
+    quantity: float
+    kcal: float
+    timestamp: str
+    feeling: str = None  # Después de comer
+    bathroom: str = None  # Info de baño
