@@ -1,4 +1,8 @@
+import hashlib
 
+
+def hash_password(password: str) -> str:
+    return hashlib.sha256(password.encode()).hexdigest()
 
 
 def predict_language(text: str, k = 10, threshold = 0.01) -> list[dict[str, float]]:

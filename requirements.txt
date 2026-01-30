@@ -21,3 +21,6 @@ pymongo
 
 # Webapp framework
 streamlit
+
+# Domain
+google-genai
