@@ -12,7 +12,7 @@ if __name__ == '__main__':
 
     _config.set_option("browser.gatherUsageStats", False)
     _config.set_option("server.headless", True)
-    sys.path.append(str(Path(__file__).parents[2] / "src"))
+    sys.path.append(str(Path(__file__).parents[1] / "src"))
 
     app_path = main.__file__
 
