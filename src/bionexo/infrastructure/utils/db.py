@@ -6,7 +6,7 @@ from datetime import datetime
 
 from bionexo.domain.entity.user import User
 from bionexo.domain.entity.intake import Intake
-from bionexo.domain.entity.symptoms import SymptomReport
+from bionexo.domain.entity.wellness_logs import WellnessReport
 from bionexo.infrastructure.utils.functions import hash_password
 from bionexo.infrastructure.utils.image_handler import compress_image
 from PIL import Image
@@ -96,36 +96,36 @@ def create_intakes_timeseries_collection(db):
     except Exception as e:
         print(f"La colección 'intakes' ya existe o hubo un error: {str(e)}")
 
-def save_symptom_report(db, symptom_report: SymptomReport) -> bool:
+def save_wellness_report(db, wellness_report: WellnessReport) -> bool:
     """
     Guarda un reporte de síntomas en MongoDB.
-    La colección 'symptoms' debe tener un índice timeseries con user_id y timestamp.
+    La colección 'wellness_logs' debe tener un índice timeseries con user_id y timestamp.
     """
-    symptoms_collection = db["symptoms"]
+    wellness_logs_collection = db["wellness_logs"]
     try:
-        report_dict = symptom_report.model_dump()
+        report_dict = wellness_report.model_dump()
         
         # Asegurar que timestamp sea datetime
         if isinstance(report_dict.get("timestamp"), str):
             report_dict["timestamp"] = datetime.fromisoformat(report_dict["timestamp"])
         
         # Convertir objetos Symptom a dict si es necesario
-        if report_dict.get("symptoms"):
-            report_dict["symptoms"] = [
+        if report_dict.get("wellness_logs"):
+            report_dict["wellness_logs"] = [
                 s.model_dump() if hasattr(s, "model_dump") else s 
-                for s in report_dict["symptoms"]
+                for s in report_dict["wellness_logs"]
             ]
         
-        symptoms_collection.insert_one(report_dict)
+        wellness_logs_collection.insert_one(report_dict)
         return True
     except Exception as e:
         print(f"Error al guardar reporte de síntomas: {str(e)}")
         return False
 
-def get_symptom_reports_from_db(db, user_id: str, limit: int = 50):
+def get_wellness_reports_from_db(db, user_id: str, limit: int = 50):
     """Obtiene los reportes de síntomas de un usuario, ordenados por timestamp descendente."""
-    symptoms_collection = db["symptoms"]
-    reports = list(symptoms_collection.find(
+    wellness_logs_collection = db["wellness_logs"]
+    reports = list(wellness_logs_collection.find(
         {"user_id": user_id}
     ).sort("timestamp", -1).limit(limit))
     
@@ -136,20 +136,20 @@ def get_symptom_reports_from_db(db, user_id: str, limit: int = 50):
     
     return reports
 
-def create_symptoms_timeseries_collection(db):
+def create_wellness_logs_timeseries_collection(db):
     """
     Crea una colección timeseries optimizada para síntomas.
     Ejecutar una sola vez.
     """
     try:
         db.create_collection(
-            "symptoms",
+            "wellness_logs",
             timeseries={
                 "timeField": "timestamp",
                 "metaField": "user_id",
                 "granularity": "minutes"
             }
         )
-        print("Colección timeseries 'symptoms' creada exitosamente")
+        print("Colección timeseries 'wellness_logs' creada exitosamente")
     except Exception as e:
-        print(f"La colección 'symptoms' ya existe o hubo un error: {str(e)}")
+        print(f"La colección 'wellness_logs' ya existe o hubo un error: {str(e)}")

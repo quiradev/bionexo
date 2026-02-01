@@ -1,12 +1,12 @@
 import streamlit as st
 import os
 from dotenv import load_dotenv
-from bionexo.infrastructure.utils.db import db_user_exists, get_db, get_intakes_from_db, save_user, save_intake, save_symptom_report, get_symptom_reports_from_db
+from bionexo.infrastructure.utils.db import db_user_exists, get_db, get_intakes_from_db, save_user, save_intake, save_wellness_report, get_wellness_reports_from_db
 from bionexo.infrastructure.utils.api_client import analyze_image
 from bionexo.domain.entity.user import PersonalIntakesRecommendations, User, AgeGroup, Sex, Activity
 # from bionexo.domain.entity.food import Food
 from bionexo.domain.entity.intake import Intake
-from bionexo.domain.entity.symptoms import SymptomReport, Symptom
+from bionexo.domain.entity.wellness_logs import Symptom, WellnessReport
 import datetime
 import pandas as pd
 import hashlib
@@ -18,6 +18,15 @@ from bionexo.infrastructure.utils.functions import hash_password
 class MainApp:
     def __init__(self):
         self.db = self.get_db_connection()
+        st.set_page_config(
+            page_title="Bionexo - Seguimiento Nutricional",
+            page_icon="🍽️",
+            layout="centered",
+            initial_sidebar_state="expanded",
+            menu_items={
+                'About': "Aplicación desarrollada por el equipo de Bionexo."
+            }
+        )
 
     @staticmethod
     @st.cache_resource
@@ -208,7 +217,7 @@ class MainApp:
         db = self.get_db_connection()
 
         # Sidebar para navegación
-        menu = st.sidebar.selectbox("Menú", ["Perfil", "Registrar Ingesta", "Síntomas", "Historial", "Análisis"])
+        menu = st.sidebar.selectbox("Menú", ["Perfil", "Registrar Ingesta", "Registrar Bienestar", "Historial", "Análisis"])
 
         if menu == "Perfil":
             st.header("Perfil de Usuario")
@@ -360,10 +369,10 @@ class MainApp:
                                 except Exception as e:
                                     st.error(f"❌ Error: {str(e)}")
 
-        elif menu == "Síntomas":
-            st.header("Registro de Síntomas")
+        elif menu == "Registrar Bienestar":
+            st.header("Registrar Bienestar y Síntomas")
             
-            with st.form("symptom_report_form"):
+            with st.form("wellness_report_form"):
                 st.subheader("📋 Información Temporal")
                 
                 col1, col2 = st.columns(2)
@@ -591,7 +600,7 @@ class MainApp:
                 
                 if submitted:
                     try:
-                        symptom_report = SymptomReport(
+                        wellness_report = WellnessReport(
                             user_id=st.session_state.get("user_id"),
                             timestamp=datetime.datetime.now(),
                             time_of_day=selected_time,
@@ -618,7 +627,7 @@ class MainApp:
                             triggers=triggers_list
                         )
                         
-                        if save_symptom_report(db, symptom_report):
+                        if save_wellness_report(db, wellness_report):
                             st.success("✅ Reporte de síntomas guardado correctamente")
                             st.balloons()
                         else:
@@ -629,7 +638,7 @@ class MainApp:
         elif menu == "Historial":
             st.header("Historial")
             
-            hist_tab1, hist_tab2 = st.tabs(["Ingestas", "Síntomas"])
+            hist_tab1, hist_tab2 = st.tabs(["Ingestas", "Bienestar"])
             
             with hist_tab1:
                 st.subheader("Historial de Ingestas")
@@ -674,12 +683,12 @@ class MainApp:
             with hist_tab2:
                 st.subheader("Historial de Síntomas")
                 
-                symptom_reports = get_symptom_reports_from_db(db, st.session_state.get("user_id"), limit=100)
+                wellness_reports = get_wellness_reports_from_db(db, st.session_state.get("user_id"), limit=100)
                 
-                if symptom_reports:
+                if wellness_reports:
                     # Convertir a DataFrame para mejor visualización
                     display_data = []
-                    for report in symptom_reports:
+                    for report in wellness_reports:
                         timestamp = report.get("timestamp")
                         if hasattr(timestamp, "strftime"):
                             date_str = timestamp.strftime("%Y-%m-%d %H:%M")
@@ -687,16 +696,16 @@ class MainApp:
                             date_str = str(timestamp)
                         
                         # Resumen de síntomas
-                        symptoms_summary = ""
+                        wellness_logs_summary = ""
                         if report.get("symptoms"):
-                            symptoms_summary = ", ".join([f"{s.get('location', 'N/A')}" for s in report.get("symptoms", [])])
+                            wellness_logs_summary = ", ".join([f"{s.get('location', 'N/A')}" for s in report.get("symptoms", [])])
                         elif report.get("general_pain"):
-                            symptoms_summary = f"Dolor General ({report.get('pain_intensity', '?')}/10)"
+                            wellness_logs_summary = f"Dolor General ({report.get('pain_intensity', '?')}/10)"
                         
                         display_data.append({
                             "Fecha": date_str,
                             "Momento": report.get("time_of_day", "N/A"),
-                            "Síntomas": symptoms_summary or "Sin síntomas",
+                            "Síntomas": wellness_logs_summary or "Sin síntomas",
                             "Ánimo": report.get("mood", "N/A"),
                             "Estrés": f"{report.get('stress_level', '?')}/10",
                             "Energía": f"{report.get('energy_level', '?')}/10",
@@ -710,9 +719,9 @@ class MainApp:
                     st.divider()
                     st.subheader("📊 Estadísticas de Síntomas")
                     
-                    avg_stress = sum([r.get("stress_level", 0) for r in symptom_reports]) / len(symptom_reports) if symptom_reports else 0
-                    avg_anxiety = sum([r.get("anxiety_level", 0) for r in symptom_reports]) / len(symptom_reports) if symptom_reports else 0
-                    avg_energy = sum([r.get("energy_level", 0) for r in symptom_reports]) / len(symptom_reports) if symptom_reports else 0
+                    avg_stress = sum([r.get("stress_level", 0) for r in wellness_reports]) / len(wellness_reports) if wellness_reports else 0
+                    avg_anxiety = sum([r.get("anxiety_level", 0) for r in wellness_reports]) / len(wellness_reports) if wellness_reports else 0
+                    avg_energy = sum([r.get("energy_level", 0) for r in wellness_reports]) / len(wellness_reports) if wellness_reports else 0
                     
                     col1, col2, col3 = st.columns(3)
                     with col1:
@@ -728,12 +737,12 @@ class MainApp:
                     
                     selected_report_idx = st.selectbox(
                         "Selecciona un reporte para ver detalles",
-                        range(len(symptom_reports)),
-                        format_func=lambda x: f"{symptom_reports[x].get('timestamp', 'N/A')} - {symptom_reports[x].get('time_of_day', 'N/A')}"
+                        range(len(wellness_reports)),
+                        format_func=lambda x: f"{wellness_reports[x].get('timestamp', 'N/A')} - {wellness_reports[x].get('time_of_day', 'N/A')}"
                     )
                     
                     if selected_report_idx is not None:
-                        report = symptom_reports[selected_report_idx]
+                        report = wellness_reports[selected_report_idx]
                         
                         col1, col2, col3 = st.columns(3)
                         with col1:
@@ -746,9 +755,9 @@ class MainApp:
                             st.write(f"**Calidad del sueño:** {report.get('sleep_quality', '?')}/10")
                             st.write(f"**Apetito:** {report.get('appetite', 'N/A')}")
                         
-                        if report.get("symptoms"):
+                        if report.get("wellness_logs"):
                             st.write("**Síntomas Localizados:**")
-                            for symptom in report.get("symptoms", []):
+                            for symptom in report.get("wellness_logs", []):
                                 st.write(f"- **{symptom.get('location')}:** {symptom.get('description')} (Intensidad: {symptom.get('intensity')}/10)")
                         
                         if report.get("general_pain"):

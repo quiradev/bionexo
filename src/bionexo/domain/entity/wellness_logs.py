@@ -13,7 +13,7 @@ class Symptom(BaseModel):
     intensity: int = Field(ge=1, le=10)  # Intensidad del 1-10
     duration_minutes: Optional[int] = None  # Duración en minutos
 
-class SymptomReport(BaseModel):
+class WellnessReport(BaseModel):
     """Modelo para registrar síntomas en un momento del día."""
     user_id: str
     timestamp: datetime
