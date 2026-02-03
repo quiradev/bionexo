@@ -39,7 +39,8 @@ class WellnessReport(BaseModel):
     
     # Síntomas gastrointestinales
     digestive_issues: Optional[str] = None  # Problemas digestivos (hinchazón, estreñimiento, etc.)
-    appetite: Optional[str] = None  # Apetito (bajo, normal, alto)
+    digestive_comfort_scale: Optional[int] = Field(None, ge=1, le=10, description="1=Muy hinchado, 10=Muy cómodo")  # Escala numérica adicional
+    appetite_scale: Optional[int] = Field(None, ge=1, le=10, description="1=Sin apetito, 10=Muy hambriento")  # Escala numérica adicional
     nausea: Optional[bool] = None  # ¿Náusea?
     
     # Síntomas respiratorios/otros

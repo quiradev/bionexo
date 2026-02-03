@@ -4,6 +4,7 @@ Funciones para gestionar la colección de alimentos (foods) en MongoDB.
 
 from bionexo.domain.entity.food import Food
 from typing import Optional, List
+from datetime import datetime
 
 def save_food(db, food: Food) -> bool:
     """Guarda un alimento/receta en la colección 'foods'."""
@@ -105,3 +106,65 @@ def delete_food(db, name: str) -> bool:
     except Exception as e:
         print(f"Error al eliminar alimento: {str(e)}")
         return False
+
+def create_or_update_food(db, food: Food) -> Optional[str]:
+    """
+    Crea o actualiza un alimento. Si existe por nombre, lo actualiza.
+    Retorna el ID del alimento creado/actualizado.
+    """
+    foods_collection = db["foods"]
+    try:
+        # Buscar si ya existe
+        existing = foods_collection.find_one(
+            {"name": {"$regex": f"^{food.name}$", "$options": "i"}}
+        )
+        
+        food_dict = food.model_dump()
+        food_dict["updated_at"] = datetime.now()
+        
+        if existing:
+            # Actualizar
+            foods_collection.update_one(
+                {"_id": existing["_id"]},
+                {"$set": food_dict}
+            )
+            return str(existing["_id"])
+        else:
+            # Crear nuevo
+            result = foods_collection.insert_one(food_dict)
+            return str(result.inserted_id)
+    except Exception as e:
+        print(f"Error al crear/actualizar alimento: {str(e)}")
+        return None
+
+def get_food_id_by_name(db, name: str) -> Optional[str]:
+    """Obtiene el ID de un alimento por nombre (case-insensitive)."""
+    foods_collection = db["foods"]
+    food = foods_collection.find_one(
+        {"name": {"$regex": f"^{name}$", "$options": "i"}}
+    )
+    if food:
+        return str(food["_id"])
+    return None
+
+def get_food_by_id(db, food_id: str) -> Optional[dict]:
+    """Obtiene un alimento por su ID."""
+    from bson.objectid import ObjectId
+    foods_collection = db["foods"]
+    try:
+        food = foods_collection.find_one({"_id": ObjectId(food_id)})
+        if food:
+            food["_id"] = str(food["_id"])
+        return food
+    except Exception as e:
+        print(f"Error al obtener alimento: {str(e)}")
+        return None
+
+def get_all_foods(db, limit: int = 100) -> List[dict]:
+    """Obtiene todos los alimentos en la colección."""
+    foods_collection = db["foods"]
+    foods = list(foods_collection.find().limit(limit))
+    for food in foods:
+        if "_id" in food:
+            food["_id"] = str(food["_id"])
+    return foods

@@ -6,9 +6,11 @@ from datetime import datetime
 
 from bionexo.domain.entity.user import User
 from bionexo.domain.entity.intake import Intake
+from bionexo.domain.entity.food import Food
 from bionexo.domain.entity.wellness_logs import WellnessReport
 from bionexo.infrastructure.utils.functions import hash_password
 from bionexo.infrastructure.utils.image_handler import compress_image
+from bionexo.repository.foods import create_or_update_food, get_food_id_by_name
 from PIL import Image
 import io
 
@@ -35,10 +37,31 @@ def save_intake(db, intake: Intake) -> bool:
     Guarda una ingesta en MongoDB con soporte para imágenes en BSON Binary.
     Las imágenes se comprimen automáticamente para optimizar almacenamiento.
     La colección 'intakes' debe tener un índice timeseries con user_id y timestamp.
+    
+    También crea o actualiza automáticamente un alimento (Food) en la colección 'foods'
+    basado en los datos de la ingesta.
     """
     intakes_collection = db["intakes"]
     try:
         intake_dict = intake.model_dump()
+        
+        # Crear o actualizar el alimento (Food) automáticamente
+        food_data = Food(
+            name=intake.food_name,
+            description=intake.voice_description,
+            ingredients=intake.ingredients or [],
+            kcal_per_100g=intake.kcal / 100 if intake.kcal and intake.quantity else 0,
+            tags=["user_created"] if intake.quantity else []
+        )
+        
+        # Obtener o crear el food_id
+        existing_food_id = get_food_id_by_name(db, intake.food_name)
+        if existing_food_id:
+            intake_dict["food_id"] = existing_food_id
+        else:
+            food_id = create_or_update_food(db, food_data)
+            if food_id:
+                intake_dict["food_id"] = food_id
         
         # Comprimir y convertir imagen a BSON Binary si existe
         if intake_dict.get("image_data") and isinstance(intake_dict["image_data"], bytes):
@@ -77,6 +100,35 @@ def get_intakes_from_db(db, user_id: str, limit: int = 50):
         # Las imágenes en Binary se quedan así para usarlas después si es necesario
     
     return intakes
+
+def get_unique_meal_names_from_db(db, user_id: str) -> list:
+    """
+    Obtiene los nombres únicos de comidas guardadas previamente por el usuario.
+    Útil para el select_box de reutilización de comidas.
+    """
+    intakes_collection = db["foods"]
+    unique_meals = intakes_collection.distinct(
+        "name",
+        # {"user_id": user_id}
+    )
+    return sorted(list(unique_meals))
+
+def get_ingredients_for_meal(db, user_id: str, meal_name: str) -> str:
+    """
+    Obtiene los ingredientes guardados para una comida específica por el usuario.
+    Retorna una cadena con los ingredientes separados por comas.
+    """
+    intakes_collection = db["foods"]
+    intake = intakes_collection.find_one(
+        {
+            # "user_id": user_id,
+            "name": meal_name
+        },
+        sort=[("timestamp", -1)]  # Obtener la más reciente
+    )
+    if intake and "ingredients" in intake:
+        return ", ".join(intake["ingredients"])
+    return ""
 
 def create_intakes_timeseries_collection(db):
     """

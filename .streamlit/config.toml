@@ -22,16 +22,16 @@ headless = true
 base = "light"
 
 # Primary accent color.
-primaryColor =
+# primaryColor =
 
 # Background color of the app.
-backgroundColor =
+# backgroundColor =
 
 # Background color used for most interactive widgets.
-secondaryBackgroundColor =
+# secondaryBackgroundColor =
 
 # Color used for almost all text.
-textColor =
+# textColor =
 
 # Red color used in the basic color palette.
 #
@@ -41,7 +41,7 @@ textColor =
 # If `redColor` is provided, and `redBackgroundColor` isn't, then
 # `redBackgroundColor` will be derived from `redColor` using 10%
 # opacity for the light theme and 20% opacity for the dark theme.
-redColor =
+# redColor =
 
 # Orange color used in the basic color palette.
 #
@@ -51,7 +51,7 @@ redColor =
 # If `orangeColor` is provided, and `orangeBackgroundColor` isn't, then
 # `orangeBackgroundColor` will be derived from `orangeColor` using 10%
 # opacity for the light theme and 20% opacity for the dark theme.
-orangeColor =
+# orangeColor =
 
 # Yellow color used in the basic color palette.
 #
@@ -61,7 +61,7 @@ orangeColor =
 # If `yellowColor` is provided, and `yellowBackgroundColor` isn't, then
 # `yellowBackgroundColor` will be derived from `yellowColor` using 10%
 # opacity for the light theme and 20% opacity for the dark theme.
-yellowColor =
+# yellowColor =
 
 # Blue color used in the basic color palette.
 #
@@ -71,7 +71,7 @@ yellowColor =
 # If a `blueColor` is provided, and `blueBackgroundColor` isn't, then
 # `blueBackgroundColor` will be derived from `blueColor` using 10%
 # opacity for the light theme and 20% opacity for the dark theme.
-blueColor =
+# blueColor =
 
 # Green color used in the basic color palette.
 #
@@ -81,7 +81,7 @@ blueColor =
 # If `greenColor` is provided, and `greenBackgroundColor` isn't, then
 # `greenBackgroundColor` will be derived from `greenColor` using 10%
 # opacity for the light theme and 20% opacity for the dark theme.
-greenColor =
+# greenColor =
 
 # Violet color used in the basic color palette.
 #
@@ -90,7 +90,7 @@ greenColor =
 # If a `violetColor` is provided, and `violetBackgroundColor` isn't, then
 # `violetBackgroundColor` will be derived from `violetColor` using 10%
 # opacity for the light theme and 20% opacity for the dark theme.
-violetColor =
+# violetColor =
 
 # Gray color used in the basic color palette.
 #
@@ -100,7 +100,7 @@ violetColor =
 # If `grayColor` is provided, and `grayBackgroundColor` isn't, then
 # `grayBackgroundColor` will be derived from `grayColor` using 10%
 # opacity for the light theme and 20% opacity for the dark theme.
-grayColor =
+# grayColor =
 
 # Red background color used in the basic color palette.
 #
@@ -109,7 +109,7 @@ grayColor =
 #
 # Otherwise, this is #ff2b2b with 10% opacity for light theme and
 # #ff6c6c with 20% opacity for dark theme.
-redBackgroundColor =
+# redBackgroundColor =
 
 # Orange background color used for the basic color palette.
 #
@@ -118,7 +118,7 @@ redBackgroundColor =
 #
 # Otherwise, this is #ffa421 with 10% opacity for the light theme and
 # #ff8700 with 20% opacity for the dark theme.
-orangeBackgroundColor =
+# orangeBackgroundColor =
 
 # Yellow background color used for the basic color palette.
 #
@@ -127,7 +127,7 @@ orangeBackgroundColor =
 #
 # Otherwise, this is #ffff12 with 10% opacity for the light theme and
 # #ffff12 with 20% opacity for the dark theme.
-yellowBackgroundColor =
+# yellowBackgroundColor =
 
 # Blue background color used for the basic color palette.
 #
@@ -136,7 +136,7 @@ yellowBackgroundColor =
 #
 # Otherwise, this is #1c83ff with 10% opacity for the light theme and
 # #3d9df3 with 20% opacity for the dark theme.
-blueBackgroundColor =
+# blueBackgroundColor =
 
 # Green background color used for the basic color palette.
 #
@@ -145,7 +145,7 @@ blueBackgroundColor =
 #
 # Otherwise, this is #21c354 with 10% opacity for the light theme and
 # #3dd56d with 20% opacity for the dark theme.
-greenBackgroundColor =
+# greenBackgroundColor =
 
 # Violet background color used for the basic color palette.
 #
@@ -154,7 +154,7 @@ greenBackgroundColor =
 #
 # Otherwise, this is #9a5dff with 10% opacity for light theme and
 # #9a5dff with 20% opacity for dark theme.
-violetBackgroundColor =
+# violetBackgroundColor =
 
 # Gray background color used for the basic color palette.
 #
@@ -163,7 +163,7 @@ violetBackgroundColor =
 #
 # Otherwise, this is #31333f with 10% opacity for the light theme and
 # #808495 with 20% opacity for the dark theme.
-grayBackgroundColor =
+# grayBackgroundColor =
 
 # Red text color used for the basic color palette.
 #
@@ -172,7 +172,7 @@ grayBackgroundColor =
 #
 # Otherwise, this is #bd4043 for the light theme and #ff6c6c for the dark
 # theme.
-redTextColor =
+# redTextColor =
 
 # Orange text color used for the basic color palette.
 #
@@ -181,7 +181,7 @@ redTextColor =
 #
 # Otherwise, this is #e2660c for the light theme and #ffbd45 for the dark
 # theme.
-orangeTextColor =
+# orangeTextColor =
 
 # Yellow text color used for the basic color palette.
 #
@@ -190,7 +190,7 @@ orangeTextColor =
 #
 # Otherwise, this is #926c05 for the light theme and #ffffc2 for the dark
 # theme.
-yellowTextColor =
+# yellowTextColor =
 
 # Blue text color used for the basic color palette.
 #
@@ -199,7 +199,7 @@ yellowTextColor =
 #
 # Otherwise, this is #0054a3 for the light theme and #3d9df3 for the dark
 # theme.
-blueTextColor =
+# blueTextColor =
 
 # Green text color used for the basic color palette.
 #
@@ -208,7 +208,7 @@ blueTextColor =
 #
 # Otherwise, this is #158237 for the light theme and #5ce488 for the dark
 # theme.
-greenTextColor =
+# greenTextColor =
 
 # Violet text color used for the basic color palette.
 #
@@ -217,7 +217,7 @@ greenTextColor =
 #
 # Otherwise, this is #583f84 for the light theme and #b27eff for the dark
 # theme.
-violetTextColor =
+# violetTextColor =
 
 # Gray text color used for the basic color palette.
 #
@@ -226,23 +226,23 @@ violetTextColor =
 #
 # Otherwise, this is #31333f with 60% opacity for the light theme and
 # #fafafa with 60% opacity for the dark theme.
-grayTextColor =
+# grayTextColor =
 
 # Color used for all links.
 #
 # This defaults to the resolved value of `blueTextColor`.
-linkColor =
+# linkColor =
 
 # Whether or not links should be displayed with an underline.
-linkUnderline =
+# linkUnderline =
 
 # Text color used for code blocks.
 #
 # This defaults to the resolved value of `greenTextColor`.
-codeTextColor =
+# codeTextColor =
 
 # Background color used for code blocks.
-codeBackgroundColor =
+# codeBackgroundColor =
 
 # The font family for all text, except code blocks.
 #
@@ -259,7 +259,7 @@ codeBackgroundColor =
 # For example, you can use the following:
 #
 # font = "cool-font, fallback-cool-font, sans-serif"
-font =
+# font =
 
 # An array of fonts to use in your app.
 #
@@ -285,7 +285,7 @@ font =
 # url = "app/static/font_file.woff"
 # weight = "400"
 # style = "normal"
-fontFaces =
+# fontFaces =
 
 # The root font size (in pixels) for the app.
 #
@@ -293,7 +293,7 @@ fontFaces =
 # positive integer.
 #
 # If this isn't set, the font size will be 16px.
-baseFontSize =
+# baseFontSize =
 
 # The root font weight for the app.
 #
@@ -301,7 +301,7 @@ baseFontSize =
 # integer multiple of 100. Values can be between 100 and 600, inclusive.
 #
 # If this isn't set, the font weight will be set to 400 (normal weight).
-baseFontWeight =
+# baseFontWeight =
 
 # The font family to use for headings.
 #
@@ -316,7 +316,7 @@ baseFontWeight =
 #   fallbacks
 #
 # If this isn't set, Streamlit uses `theme.font` for headings.
-headingFont =
+# headingFont =
 
 # One or more font sizes for h1-h6 headings.
 #
@@ -343,7 +343,7 @@ headingFont =
 # headingFontSizes = "2.75rem"
 #
 # Font sizes can be specified in pixels or rem, but rem is recommended.
-headingFontSizes =
+# headingFontSizes =
 
 # One or more font weights for h1-h6 headings.
 #
@@ -368,7 +368,7 @@ headingFontSizes =
 # Setting a single value (not in an array) will set the font weight for
 # all h1-h6 headings to that value:
 # headingFontWeights = 500
-headingFontWeights =
+# headingFontWeights =
 
 # The font family to use for code (monospace) in the sidebar.
 #
@@ -381,7 +381,7 @@ headingFontWeights =
 #   "'Space Mono':https://fonts.googleapis.com/css2?family=Space+Mono&display=swap")
 # - A comma-separated list of these (as a single string) to specify
 #   fallbacks
-codeFont =
+# codeFont =
 
 # The font size (in pixels or rem) for code blocks and code text.
 #
@@ -389,7 +389,7 @@ codeFont =
 # doesn't apply to inline code, which is set by default to 0.75em.
 #
 # If this isn't set, the code font size will be 0.875rem.
-codeFontSize =
+# codeFontSize =
 
 # The font weight for code blocks and code text.
 #
@@ -398,7 +398,7 @@ codeFontSize =
 # 100 and 600, inclusive.
 #
 # If this isn't set, the code font weight will be 400 (normal weight).
-codeFontWeight =
+# codeFontWeight =
 
 # The radius used as basis for the corners of most UI elements.
 #
@@ -412,7 +412,7 @@ codeFontWeight =
 #
 # For example, you can use "10px", "0.5rem", or "2rem". To follow best
 # practices, use rem instead of pixels when specifying a numeric size.
-baseRadius =
+# baseRadius =
 
 # The radius used as basis for the corners of buttons.
 #
@@ -428,15 +428,15 @@ baseRadius =
 # practices, use rem instead of pixels when specifying a numeric size.
 #
 # If this isn't set, Streamlit uses `theme.baseRadius` instead.
-buttonRadius =
+# buttonRadius =
 
 # The color of the border around elements.
-borderColor =
+# borderColor =
 
 # The color of the border around dataframes and tables.
 #
 # If this isn't set, Streamlit uses `theme.borderColor` instead.
-dataframeBorderColor =
+# dataframeBorderColor =
 
 # The background color of the dataframe's header.
 #
@@ -445,14 +445,14 @@ dataframeBorderColor =
 # the bottom row of data editors with a dynamic number of rows. If this
 # isn't set, Streamlit uses a mix of `theme.backgroundColor` and
 # `theme.secondaryBackgroundColor`.
-dataframeHeaderBackgroundColor =
+# dataframeHeaderBackgroundColor =
 
 # Whether to show a border around input widgets.
-showWidgetBorder =
+# showWidgetBorder =
 
 # Whether to show a vertical separator between the sidebar and the main
 # content area.
-showSidebarBorder =
+# showSidebarBorder =
 
 # An array of colors to use for categorical chart data.
 #
@@ -490,7 +490,7 @@ showSidebarBorder =
 #     "#6d3fc0", # purple80
 #     "#d5dae5", # gray40
 # ]
-chartCategoricalColors =
+# chartCategoricalColors =
 
 # An array of ten colors to use for sequential or continuous chart data.
 #
@@ -526,22 +526,22 @@ chartCategoricalColors =
 #     "#c7ebff", #blue20
 #     "#e4f5ff", #blue10
 # ]
-chartSequentialColors =
+# chartSequentialColors =
 
 
 [theme.sidebar]
 
 # Primary accent color.
-primaryColor =
+# primaryColor =
 
 # Background color of the app.
-backgroundColor =
+# backgroundColor =
 
 # Background color used for most interactive widgets.
-secondaryBackgroundColor =
+# secondaryBackgroundColor =
 
 # Color used for almost all text.
-textColor =
+# textColor =
 
 # Red color used in the basic color palette.
 #
@@ -551,7 +551,7 @@ textColor =
 # If `redColor` is provided, and `redBackgroundColor` isn't, then
 # `redBackgroundColor` will be derived from `redColor` using 10%
 # opacity for the light theme and 20% opacity for the dark theme.
-redColor =
+# redColor =
 
 # Orange color used in the basic color palette.
 #
@@ -561,7 +561,7 @@ redColor =
 # If `orangeColor` is provided, and `orangeBackgroundColor` isn't, then
 # `orangeBackgroundColor` will be derived from `orangeColor` using 10%
 # opacity for the light theme and 20% opacity for the dark theme.
-orangeColor =
+# orangeColor =
 
 # Yellow color used in the basic color palette.
 #
@@ -571,7 +571,7 @@ orangeColor =
 # If `yellowColor` is provided, and `yellowBackgroundColor` isn't, then
 # `yellowBackgroundColor` will be derived from `yellowColor` using 10%
 # opacity for the light theme and 20% opacity for the dark theme.
-yellowColor =
+# yellowColor =
 
 # Blue color used in the basic color palette.
 #
@@ -581,7 +581,7 @@ yellowColor =
 # If a `blueColor` is provided, and `blueBackgroundColor` isn't, then
 # `blueBackgroundColor` will be derived from `blueColor` using 10%
 # opacity for the light theme and 20% opacity for the dark theme.
-blueColor =
+# blueColor =
 
 # Green color used in the basic color palette.
 #
@@ -591,7 +591,7 @@ blueColor =
 # If `greenColor` is provided, and `greenBackgroundColor` isn't, then
 # `greenBackgroundColor` will be derived from `greenColor` using 10%
 # opacity for the light theme and 20% opacity for the dark theme.
-greenColor =
+# greenColor =
 
 # Violet color used in the basic color palette.
 #
@@ -600,7 +600,7 @@ greenColor =
 # If a `violetColor` is provided, and `violetBackgroundColor` isn't, then
 # `violetBackgroundColor` will be derived from `violetColor` using 10%
 # opacity for the light theme and 20% opacity for the dark theme.
-violetColor =
+# violetColor =
 
 # Gray color used in the basic color palette.
 #
@@ -610,7 +610,7 @@ violetColor =
 # If `grayColor` is provided, and `grayBackgroundColor` isn't, then
 # `grayBackgroundColor` will be derived from `grayColor` using 10%
 # opacity for the light theme and 20% opacity for the dark theme.
-grayColor =
+# grayColor =
 
 # Red background color used in the basic color palette.
 #
@@ -619,7 +619,7 @@ grayColor =
 #
 # Otherwise, this is #ff2b2b with 10% opacity for light theme and
 # #ff6c6c with 20% opacity for dark theme.
-redBackgroundColor =
+# redBackgroundColor =
 
 # Orange background color used for the basic color palette.
 #
@@ -628,7 +628,7 @@ redBackgroundColor =
 #
 # Otherwise, this is #ffa421 with 10% opacity for the light theme and
 # #ff8700 with 20% opacity for the dark theme.
-orangeBackgroundColor =
+# orangeBackgroundColor =
 
 # Yellow background color used for the basic color palette.
 #
@@ -637,7 +637,7 @@ orangeBackgroundColor =
 #
 # Otherwise, this is #ffff12 with 10% opacity for the light theme and
 # #ffff12 with 20% opacity for the dark theme.
-yellowBackgroundColor =
+# yellowBackgroundColor =
 
 # Blue background color used for the basic color palette.
 #
@@ -646,7 +646,7 @@ yellowBackgroundColor =
 #
 # Otherwise, this is #1c83ff with 10% opacity for the light theme and
 # #3d9df3 with 20% opacity for the dark theme.
-blueBackgroundColor =
+# blueBackgroundColor =
 
 # Green background color used for the basic color palette.
 #
@@ -655,7 +655,7 @@ blueBackgroundColor =
 #
 # Otherwise, this is #21c354 with 10% opacity for the light theme and
 # #3dd56d with 20% opacity for the dark theme.
-greenBackgroundColor =
+# greenBackgroundColor =
 
 # Violet background color used for the basic color palette.
 #
@@ -664,7 +664,7 @@ greenBackgroundColor =
 #
 # Otherwise, this is #9a5dff with 10% opacity for light theme and
 # #9a5dff with 20% opacity for dark theme.
-violetBackgroundColor =
+# violetBackgroundColor =
 
 # Gray background color used for the basic color palette.
 #
@@ -673,7 +673,7 @@ violetBackgroundColor =
 #
 # Otherwise, this is #31333f with 10% opacity for the light theme and
 # #808495 with 20% opacity for the dark theme.
-grayBackgroundColor =
+# grayBackgroundColor =
 
 # Red text color used for the basic color palette.
 #
@@ -682,7 +682,7 @@ grayBackgroundColor =
 #
 # Otherwise, this is #bd4043 for the light theme and #ff6c6c for the dark
 # theme.
-redTextColor =
+# redTextColor =
 
 # Orange text color used for the basic color palette.
 #
@@ -691,7 +691,7 @@ redTextColor =
 #
 # Otherwise, this is #e2660c for the light theme and #ffbd45 for the dark
 # theme.
-orangeTextColor =
+# orangeTextColor =
 
 # Yellow text color used for the basic color palette.
 #
@@ -700,7 +700,7 @@ orangeTextColor =
 #
 # Otherwise, this is #926c05 for the light theme and #ffffc2 for the dark
 # theme.
-yellowTextColor =
+# yellowTextColor =
 
 # Blue text color used for the basic color palette.
 #
@@ -709,7 +709,7 @@ yellowTextColor =
 #
 # Otherwise, this is #0054a3 for the light theme and #3d9df3 for the dark
 # theme.
-blueTextColor =
+# blueTextColor =
 
 # Green text color used for the basic color palette.
 #
@@ -718,7 +718,7 @@ blueTextColor =
 #
 # Otherwise, this is #158237 for the light theme and #5ce488 for the dark
 # theme.
-greenTextColor =
+# greenTextColor =
 
 # Violet text color used for the basic color palette.
 #
@@ -727,7 +727,7 @@ greenTextColor =
 #
 # Otherwise, this is #583f84 for the light theme and #b27eff for the dark
 # theme.
-violetTextColor =
+# violetTextColor =
 
 # Gray text color used for the basic color palette.
 #
@@ -736,23 +736,23 @@ violetTextColor =
 #
 # Otherwise, this is #31333f with 60% opacity for the light theme and
 # #fafafa with 60% opacity for the dark theme.
-grayTextColor =
+# grayTextColor =
 
 # Color used for all links.
 #
 # This defaults to the resolved value of `blueTextColor`.
-linkColor =
+# linkColor =
 
 # Whether or not links should be displayed with an underline.
-linkUnderline =
+# linkUnderline =
 
 # Text color used for code blocks.
 #
 # This defaults to the resolved value of `greenTextColor`.
-codeTextColor =
+# codeTextColor =
 
 # Background color used for code blocks.
-codeBackgroundColor =
+# codeBackgroundColor =
 
 # The font family for all text, except code blocks.
 #
@@ -769,7 +769,7 @@ codeBackgroundColor =
 # For example, you can use the following:
 #
 # font = "cool-font, fallback-cool-font, sans-serif"
-font =
+# font =
 
 # The font family to use for headings.
 #
@@ -784,7 +784,7 @@ font =
 #   fallbacks
 #
 # If this isn't set, Streamlit uses `theme.font` for headings.
-headingFont =
+# headingFont =
 
 # One or more font sizes for h1-h6 headings.
 #
@@ -811,7 +811,7 @@ headingFont =
 # headingFontSizes = "2.75rem"
 #
 # Font sizes can be specified in pixels or rem, but rem is recommended.
-headingFontSizes =
+# headingFontSizes =
 
 # One or more font weights for h1-h6 headings.
 #
@@ -836,7 +836,7 @@ headingFontSizes =
 # Setting a single value (not in an array) will set the font weight for
 # all h1-h6 headings to that value:
 # headingFontWeights = 500
-headingFontWeights =
+# headingFontWeights =
 
 # The font family to use for code (monospace) in the sidebar.
 #
@@ -849,7 +849,7 @@ headingFontWeights =
 #   "'Space Mono':https://fonts.googleapis.com/css2?family=Space+Mono&display=swap")
 # - A comma-separated list of these (as a single string) to specify
 # fallbacks
-codeFont =
+# codeFont =
 
 # The font size (in pixels or rem) for code blocks and code text.
 #
@@ -857,7 +857,7 @@ codeFont =
 # doesn't apply to inline code, which is set by default to 0.75em.
 #
 # If this isn't set, the code font size will be 0.875rem.
-codeFontSize =
+# codeFontSize =
 
 # The font weight for code blocks and code text.
 #
@@ -866,7 +866,7 @@ codeFontSize =
 # 100 and 600, inclusive.
 #
 # If this isn't set, the code font weight will be 400 (normal weight).
-codeFontWeight =
+# codeFontWeight =
 
 # The radius used as basis for the corners of most UI elements.
 #
@@ -880,7 +880,7 @@ codeFontWeight =
 #
 # For example, you can use "10px", "0.5rem", or "2rem". To follow best
 # practices, use rem instead of pixels when specifying a numeric size.
-baseRadius =
+# baseRadius =
 
 # The radius used as basis for the corners of buttons.
 #
@@ -896,15 +896,15 @@ baseRadius =
 # practices, use rem instead of pixels when specifying a numeric size.
 #
 # If this isn't set, Streamlit uses `theme.baseRadius` instead.
-buttonRadius =
+# buttonRadius =
 
 # The color of the border around elements.
-borderColor =
+# borderColor =
 
 # The color of the border around dataframes and tables.
 #
 # If this isn't set, Streamlit uses `theme.borderColor` instead.
-dataframeBorderColor =
+# dataframeBorderColor =
 
 # The background color of the dataframe's header.
 #
@@ -913,7 +913,7 @@ dataframeBorderColor =
 # the bottom row of data editors with a dynamic number of rows. If this
 # isn't set, Streamlit uses a mix of `theme.backgroundColor` and
 # `theme.secondaryBackgroundColor`.
-dataframeHeaderBackgroundColor =
+# dataframeHeaderBackgroundColor =
 
 # Whether to show a border around input widgets.
-showWidgetBorder =
+# showWidgetBorder =

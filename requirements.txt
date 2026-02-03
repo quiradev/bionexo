@@ -25,3 +25,5 @@ altair~=6.0.0
 
 # Domain
 google-genai~=1.60.0
+python-dateutil~=2.9.0
+tzlocal~=4.3.1

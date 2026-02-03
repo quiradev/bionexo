@@ -7,7 +7,7 @@ Uso: python setup_mongodb.py
 
 import os
 from dotenv import load_dotenv
-from bionexo.infrastructure.utils.db import get_db, create_intakes_timeseries_collection, create_symptoms_timeseries_collection
+from bionexo.infrastructure.utils.db import get_db, create_intakes_timeseries_collection, create_wellness_logs_timeseries_collection
 
 load_dotenv()
 
@@ -51,27 +51,27 @@ def setup_database():
     except Exception as e:
         print(f"⚠️ Error creando índice en foods: {e}")
     
-    # Crear colección timeseries para symptoms
-    print("\n🏥 Creando colección timeseries para 'symptoms'...")
+    # Crear colección timeseries para wellness_logs
+    print("\n🏥 Creando colección timeseries para 'wellness_logs'...")
     try:
-        create_symptoms_timeseries_collection(db)
+        create_wellness_logs_timeseries_collection(db)
     except Exception as e:
         print(f"⚠️ Error: {e}")
     
-    # Crear índice compuesto en symptoms
-    symptoms_collection = db["symptoms"]
+    # Crear índice compuesto en wellness_logs
+    wellness_logs_collection = db["wellness_logs"]
     try:
-        symptoms_collection.create_index([("user_id", 1), ("timestamp", -1)])
-        print("✅ Índice compuesto en 'symptoms' creado")
+        wellness_logs_collection.create_index([("user_id", 1), ("timestamp", -1)])
+        print("✅ Índice compuesto en 'wellness_logs' creado")
     except Exception as e:
-        print(f"⚠️ Error creando índice en symptoms: {e}")
+        print(f"⚠️ Error creando índice en wellness_logs: {e}")
     
     print("\n✅ Base de datos configurada exitosamente!")
     print("\n📋 Colecciones disponibles:")
     print("  - users: Información de usuarios")
     print("  - intakes: Registro de comidas (timeseries)")
     print("  - foods: Recetas y alimentos")
-    print("  - symptoms: Registro de síntomas (timeseries)")
+    print("  - wellness_logs: Registro de síntomas (timeseries)")
 
 if __name__ == "__main__":
     setup_database()
