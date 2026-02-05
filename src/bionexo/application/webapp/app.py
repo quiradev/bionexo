@@ -223,9 +223,10 @@ class MainApp:
             
             col1, col2 = st.columns(2)
             with col1:
-                meal_time = st.time_input(
-                    "Hora de la comida *",
-                    value=datetime.time(12, 0)
+                meal_datetime = st.datetime_input(
+                    "Fecha y hora de la comida *",
+                    format="YYYY-MM-DD",
+                    value=datetime.datetime.now()
                 )
             with col2:
                 meal_type = st.selectbox(
@@ -341,14 +342,10 @@ class MainApp:
                     try:
                         # Crear timestamp completo con la fecha actual y hora especificada
                         tz = st.session_state.get("tz", "Europe/Madrid")
-                        now_local = datetime.datetime.now(ZoneInfo(tz))
-                        intake_datetime_local = datetime.datetime.combine(
-                            now_local.date(),
-                            meal_time
-                        )
+                        
                         # Convertir a UTC para almacenar
                         from bionexo.infrastructure.utils.functions import local_to_utc
-                        intake_datetime = local_to_utc(intake_datetime_local, tz)
+                        intake_datetime = local_to_utc(meal_datetime, tz)
                         
                         ingredients = [
                             ing.strip() for ing in ingredients_input.split(",")
@@ -396,10 +393,11 @@ class MainApp:
                 
                 col1, col2 = st.columns(2)
                 with col1:
-                    meal_time = st.time_input(
-                        "Hora de la comida *",
-                        value=datetime.time(12, 0),
-                        key="image_meal_time"
+                    meal_datetime = st.datetime_input(
+                        "Fecha y hora de la comida *",
+                        format="YYYY-MM-DD",
+                        value=datetime.datetime.now(),
+                        key="image_meal_datetime"
                     )
                 with col2:
                     meal_type = st.selectbox(
@@ -531,14 +529,9 @@ class MainApp:
                             
                             # Crear timestamp completo con la fecha actual y hora especificada
                             tz = st.session_state.get("tz", "Europe/Madrid")
-                            now_local = datetime.datetime.now(ZoneInfo(tz))
-                            intake_datetime_local = datetime.datetime.combine(
-                                now_local.date(),
-                                meal_time
-                            )
                             # Convertir a UTC para almacenar
                             from bionexo.infrastructure.utils.functions import local_to_utc
-                            intake_datetime = local_to_utc(intake_datetime_local, tz)
+                            intake_datetime = local_to_utc(meal_datetime, tz)
                             
                             ingredients = [
                                 ing.strip() for ing in ingredients_input.split(",")
@@ -609,12 +602,20 @@ class MainApp:
                 
                 col1, col2 = st.columns(2)
                 with col1:
+                    wellness_datetime = st.datetime_input(
+                        "Fecha y hora del reporte *",
+                        format="YYYY-MM-DD",
+                        value=datetime.datetime.now()
+                    )
+                
+                with col2:
                     time_of_day = st.selectbox(
                         "Momento del día *",
                         ["Mañana (00:00 - 11:59)", "Tarde (12:00 - 17:59)", "Noche (18:00 - 23:59)", "Personalizado"]
                     )
                 
-                with col2:
+                col1, col2 = st.columns(2)
+                with col1:
                     hour_start = st.number_input(
                         "Hora inicio (0-23) *",
                         min_value=0,
@@ -623,21 +624,14 @@ class MainApp:
                         step=1
                     )
                 
-                hour_end = None
-                if time_of_day != "Personalizado":
-                    hour_end = hour_start + 1
-                else:
-                    col1, col2 = st.columns(2)
-                    with col1:
-                        st.write("")
-                    with col2:
-                        hour_end = st.number_input(
-                            "Hora fin (0-23) (opcional)",
-                            min_value=0,
-                            max_value=23,
-                            value=hour_start + 1,
-                            step=1
-                        )
+                with col2:
+                    hour_end = st.number_input(
+                        "Hora fin (0-23) (opcional)",
+                        min_value=0,
+                        max_value=23,
+                        value=hour_start + 1,
+                        step=1
+                    )
                 
                 # Mapeo de tiempo del día
                 time_of_day_map = {
@@ -845,7 +839,7 @@ class MainApp:
                     try:
                         tz = st.session_state.get("tz", "Europe/Madrid")
                         from bionexo.infrastructure.utils.functions import local_to_utc
-                        wellness_ts = local_to_utc(datetime.datetime.now(ZoneInfo(tz)), tz)
+                        wellness_ts = local_to_utc(wellness_datetime, tz)
 
                         wellness_report = WellnessReport(
                             user_id=st.session_state.get("user_id"),

@@ -23,7 +23,7 @@
                     "PYTHONPATH": "${env:PYTHONPATH}:${workspaceFolder}/src"
                 }
             },
-            "args": ["--apply", "--force-swap"]
+            // "args": ["--apply", "--force-swap"]
         },
     ]
 }
