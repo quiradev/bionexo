@@ -15,7 +15,7 @@ import hashlib
 from PIL import Image
 import io
 
-from bionexo.infrastructure.utils.functions import hash_password
+from bionexo.infrastructure.utils.functions import hash_password, utc_to_local
 
 class MainApp:
     def __init__(self):
@@ -207,7 +207,6 @@ class MainApp:
                             st.error("❌ Error al guardar el perfil: El usuario ya existe.")
                         else:
                             st.success("✅ Perfil guardado correctamente")
-                            st.balloons()
                     except Exception as e:
                         st.error(f"❌ Error al guardar el perfil: {str(e)}")
 
@@ -338,7 +337,7 @@ class MainApp:
                         kcal=kcal,
                         timestamp=intake_datetime,
                         meal_type=meal_type,
-                        quantity_type=quantity_option,
+                        quantity_type="both",
                         quantity_description=quantity_description,
                         feeling_scale=feeling_scale,
                         ingredients=ingredients if ingredients else None,
@@ -377,7 +376,7 @@ class MainApp:
                 meal_datetime = st.datetime_input(
                     "Fecha y hora de la comida *",
                     format="YYYY-MM-DD",
-                    value=datetime.datetime.now(),
+                    value=st.session_state.get("image_meal_datetime", datetime.datetime.now()),
                     key="image_meal_datetime"
                 )
             with col2:
@@ -536,7 +535,6 @@ class MainApp:
                         
                         if save_intake(db, intake):
                             st.success("✅ Ingesta con imagen registrada correctamente")
-                            st.balloons()
                         else:
                             st.error("❌ Error al guardar la ingesta")
                     except Exception as e:
@@ -559,7 +557,8 @@ class MainApp:
         with st.container(border=True, width=200):
             with st.container(horizontal=True):
                 st.write(f"**{intake.meal_type}**")
-                st.caption(f"📅 {intake.timestamp.strftime('%Y-%m-%d %H:%M') if hasattr(intake.timestamp, 'strftime') else intake.timestamp}")
+                local_timestamp = utc_to_local(intake.timestamp, st.session_state.get("tz", "Europe/Madrid"))
+                st.caption(f"📅 {local_timestamp.strftime('%Y-%m-%d %H:%M')}")
             
             st.write(f"**{intake.food_name}**")
             ingredients  = intake.ingredients or []
@@ -649,7 +648,7 @@ class MainApp:
         elif menu == "Registrar Bienestar":
             st.header("Registrar Bienestar y Síntomas")
             
-            with st.form("wellness_report_form"):
+            with st.container():
                 st.subheader("📋 Información Temporal")
                 
                 col1, col2 = st.columns(2)
@@ -657,7 +656,8 @@ class MainApp:
                     wellness_datetime = st.datetime_input(
                         "Fecha y hora del reporte *",
                         format="YYYY-MM-DD",
-                        value=datetime.datetime.now()
+                        value=st.session_state.get("wellness_datetime", datetime.datetime.now()),
+                        key="wellness_datetime"
                     )
                 
                 with col2:
@@ -885,7 +885,7 @@ class MainApp:
                     triggers_list = [t.strip() for t in triggers.split(",") if t.strip()] if triggers else None
                 
                 st.divider()
-                submitted = st.form_submit_button("💾 Guardar Reporte de Síntomas", width="stretch")
+                submitted = st.button("💾 Guardar Reporte de Síntomas", width="stretch")
                 
                 if submitted:
                     try:
@@ -923,7 +923,6 @@ class MainApp:
                         
                         if save_wellness_report(db, wellness_report):
                             st.success("✅ Reporte de síntomas guardado correctamente")
-                            st.balloons()
                         else:
                             st.error("❌ Error al guardar el reporte")
                     except Exception as e:
