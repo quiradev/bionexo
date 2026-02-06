@@ -1,4 +1,5 @@
 import os
+from typing import List
 from pymongo import MongoClient
 from pymongo.errors import DuplicateKeyError
 from bson import Binary
@@ -86,20 +87,25 @@ def save_intake(db, intake: Intake) -> bool:
         print(f"Error al guardar ingesta: {str(e)}")
         return False
 
-def get_intakes_from_db(db, user_id: str, limit: int = 50):
+def get_intakes_from_db(db, user_id: str, limit: int = 50) -> List[Intake]:
     """Obtiene las ingestas de un usuario, ordenadas por timestamp descendente."""
     intakes_collection = db["intakes"]
     intakes = list(intakes_collection.find(
         {"user_id": user_id}
     ).sort("timestamp", -1).limit(limit))
     
-    # Convertir ObjectId a string para serialización
+    # Convertir ObjectId a string y crear objetos Intake
+    intake_objects = []
     for intake in intakes:
         if "_id" in intake:
             intake["_id"] = str(intake["_id"])
-        # Las imágenes en Binary se quedan así para usarlas después si es necesario
+        # Convertir imagen Binary a bytes si existe
+        if isinstance(intake.get("image_data"), Binary):
+            intake["image_data"] = bytes(intake["image_data"])
+        # Crear objeto Intake
+        intake_objects.append(Intake(**intake))
     
-    return intakes
+    return intake_objects
 
 def get_unique_meal_names_from_db(db, user_id: str) -> list:
     """

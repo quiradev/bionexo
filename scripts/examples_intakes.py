@@ -133,21 +133,21 @@ def example_get_intakes():
     if intakes:
         print(f"\n📋 Últimas {len(intakes)} ingestas:")
         for i, intake in enumerate(intakes, 1):
-            timestamp = intake.get("timestamp")
+            timestamp = intake.timestamp
             if hasattr(timestamp, "strftime"):
                 ts_str = timestamp.strftime("%Y-%m-%d %H:%M")
             else:
                 ts_str = str(timestamp)
             
-            print(f"\n{i}. {intake['food_name']}")
+            print(f"\n{i}. {intake.food_name}")
             print(f"   📅 {ts_str}")
-            print(f"   🔥 {intake['kcal']} kcal | 📏 {intake['quantity']}g")
-            if intake.get("ingredients"):
-                print(f"   🥘 {', '.join(intake['ingredients'])}")
-            if intake.get("feeling"):
-                print(f"   😊 Sentimiento: {intake['feeling']}")
-            if intake.get("image_data"):
-                print(f"   🖼️ Imagen: {intake.get('image_size_bytes', 0)} bytes")
+            print(f"   🔥 {intake.kcal} kcal | 📏 {intake.quantity}g")
+            if hasattr(intake, "ingredients") and intake.ingredients:
+                print(f"   🥘 {', '.join(intake.ingredients)}")
+            if hasattr(intake, "feeling") and intake.feeling:
+                print(f"   😊 Sentimiento: {intake.feeling}")
+            if hasattr(intake, "image_data") and intake.image_data:
+                print(f"   🖼️ Imagen: {getattr(intake, 'image_size_bytes', 0)} bytes")
     else:
         print("ℹ️ No hay ingestas registradas")
 
@@ -203,7 +203,7 @@ def example_simulate_week_intakes():
     
     # Mostrar estadísticas
     intakes = get_intakes_from_db(db, user_id, limit=100)
-    total_kcal = sum([i.get("kcal", 0) for i in intakes])
+    total_kcal = sum([i.kcal or 0 for i in intakes])
     avg_kcal = total_kcal / len(intakes) if intakes else 0
     
     print(f"\n📊 Estadísticas:")

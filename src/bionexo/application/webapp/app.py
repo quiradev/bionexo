@@ -1,3 +1,4 @@
+from git import List
 import streamlit as st
 import os
 from dotenv import load_dotenv
@@ -210,14 +211,11 @@ class MainApp:
                     except Exception as e:
                         st.error(f"❌ Error al guardar el perfil: {str(e)}")
 
-    @staticmethod
+    @classmethod
     @st.fragment
-    def register_intake():
+    def register_manual_intake(cls):
         db = get_db()
-
-        tab1, tab2 = st.tabs(["Manual", "Con Imagen"])
-            
-        with tab1:
+        with st.container():
             # === SECCIÓN 1: INFORMACIÓN TEMPORAL ===
             st.subheader("⏰ Información Temporal")
             
@@ -226,7 +224,8 @@ class MainApp:
                 meal_datetime = st.datetime_input(
                     "Fecha y hora de la comida *",
                     format="YYYY-MM-DD",
-                    value=datetime.datetime.now()
+                    key="manual_meal_datetime",
+                    value=st.session_state.get("manual_meal_datetime", datetime.datetime.now())
                 )
             with col2:
                 meal_type = st.selectbox(
@@ -243,49 +242,44 @@ class MainApp:
             food_name = st.selectbox(
                 "Selecciona una comida anterior *",
                 previous_meals,
-                accept_new_options=True
+                accept_new_options=True,
+                key="food_name_select",
+                index=previous_meals.index(st.session_state.get("food_name_select", previous_meals[0])) if st.session_state.get("food_name_select") in previous_meals else None
             )
             ingredients_food = ""
-            use_previous = False
             if food_name in previous_meals:
-                use_previous = True
                 ingredients_food = get_ingredients_for_meal(db, st.session_state.get("user_id"), food_name)
             
+            # === SECCIÓN 5: INGREDIENTES ===
+            st.subheader("🥘 Ingredientes")
+            ingredients_input = st.text_area(
+                "Ingredientes (separados por coma)",
+                placeholder="Ej: pollo, arroz, sal, aceite",
+                value=ingredients_food,
+                key=f"ingredients_{food_name}",
+                height=60
+            )
+
             # === SECCIÓN 3: CANTIDAD Y CALORÍAS ===
             st.subheader("⚖️ Cantidad y Calorías")
-            
-            quantity_option = st.radio(
-                "¿Cómo prefieres indicar la cantidad? *",
-                ["Gramos", "Descripción conversacional", "Ambas"]
-            )
             
             quantity = None
             quantity_description = None
             
             col1, col2 = st.columns(2)
             
-            if quantity_option in ["Gramos", "Ambas"]:
-                with col1:
-                    quantity = st.number_input(
-                        "Cantidad en gramos",
-                        min_value=1,
-                        step=10,
-                        value=100
-                    )
-            
-            if quantity_option in ["Descripción conversacional", "Ambas"]:
-                with col2 if quantity_option != "Ambas" else col1:
-                    quantity_description = st.text_input(
-                        "Descripción (ej: medio plato, un vaso, 30% del plato)",
-                        placeholder="Ej: Medio plato grande, un vaso de agua"
-                    )
-            
-            if quantity_option == "Ambas":
-                with col2:
-                    quantity_description = st.text_input(
-                        "Descripción adicional",
-                        placeholder="Ej: Medio plato grande"
-                    )
+            with col1:
+                quantity = st.number_input(
+                    "Cantidad en gramos",
+                    min_value=1,
+                    step=10,
+                    value=100
+                )
+            with col2:
+                quantity_description = st.text_input(
+                    "Descripción (ej: medio plato, un vaso, 30% del plato)",
+                    placeholder="Ej: Medio plato grande, un vaso de agua"
+                )
             
             col1, col2 = st.columns(2)
             with col1:
@@ -309,17 +303,6 @@ class MainApp:
                     help="1 = Con hambre, 10 = Muy hinchado/Saciado"
                 )
             
-            # === SECCIÓN 5: INGREDIENTES ===
-            st.subheader("🥘 Ingredientes")
-            
-            ingredients_input = st.text_area(
-                "Ingredientes (separados por coma)",
-                placeholder="Ej: pollo, arroz, sal, aceite",
-                value=ingredients_food,
-                key=f"ingredients_{food_name}",
-                height=60
-            )
-            
             # === SECCIÓN 6: NOTAS ADICIONALES ===
             st.subheader("📝 Notas Adicionales")
             
@@ -330,6 +313,186 @@ class MainApp:
             )
             
             submitted = st.button("💾 Guardar Ingesta", width="stretch")
+        
+        if submitted:
+            if not food_name:
+                st.error("Por favor, ingresa el nombre de la comida")
+            else:
+                try:
+                    # Crear timestamp completo con la fecha actual y hora especificada
+                    tz = st.session_state.get("tz", "Europe/Madrid")
+                    
+                    # Convertir a UTC para almacenar
+                    from bionexo.infrastructure.utils.functions import local_to_utc
+                    intake_datetime = local_to_utc(meal_datetime, tz)
+                    
+                    ingredients = [
+                        ing.strip() for ing in ingredients_input.split(",")
+                        if ing.strip()
+                    ] if ingredients_input else None
+                    
+                    intake = Intake(
+                        user_id=st.session_state.get("user_id"),
+                        food_name=food_name,
+                        quantity=quantity,
+                        kcal=kcal,
+                        timestamp=intake_datetime,
+                        meal_type=meal_type,
+                        quantity_type=quantity_option,
+                        quantity_description=quantity_description,
+                        feeling_scale=feeling_scale,
+                        ingredients=ingredients if ingredients else None,
+                        voice_description=voice_description if voice_description else None
+                    )
+                    
+                    if save_intake(db, intake):
+                        st.toast("¡Ingesta guardada!", icon=":material/check:")
+                    else:
+                        st.toast("Error al guardar la ingesta", icon=":material/error:")
+                except Exception as e:
+                    st.error(f"❌ Error: {str(e)}")
+
+    @classmethod
+    @st.fragment
+    def register_image_intake(cls):
+        db = get_db()
+        st.subheader("Registro con Imagen")
+        uploaded_file = st.file_uploader(
+            "Sube una imagen de la comida",
+            type=["jpg", "jpeg", "png", "webp"],
+            help="Formato óptimo: JPG o PNG (máx 10MB)"
+        )
+        
+        if uploaded_file:
+            # Mostrar preview
+            image = Image.open(uploaded_file)
+            st.image(image, caption="Vista previa", use_column_width=True)
+            
+            
+            # === SECCIÓN 1: INFORMACIÓN TEMPORAL ===
+            st.subheader("⏰ Información Temporal")
+            
+            col1, col2 = st.columns(2)
+            with col1:
+                meal_datetime = st.datetime_input(
+                    "Fecha y hora de la comida *",
+                    format="YYYY-MM-DD",
+                    value=datetime.datetime.now(),
+                    key="image_meal_datetime"
+                )
+            with col2:
+                meal_type = st.selectbox(
+                    "Tipo de comida *",
+                    ["Desayuno", "Almuerzo", "Comida", "Cena", "Merienda", "Picar entre horas"],
+                    key="image_meal_type"
+                )
+            
+            # === SECCIÓN 2: NOMBRE DE LA INGESTA ===
+            st.subheader("🍽️ Seleccionar o Crear Comida")
+            
+            # Obtener comidas previas
+            previous_meals = get_unique_meal_names_from_db(db, st.session_state.get("user_id"))
+            
+            use_previous = st.checkbox("¿Usar una comida guardada previamente?", key="image_use_previous")
+            
+            if use_previous and previous_meals:
+                food_name = st.selectbox(
+                    "Selecciona una comida anterior *",
+                    previous_meals,
+                    key="image_previous_meals"
+                )
+            else:
+                food_name = st.text_input(
+                    "Nombre de la comida *",
+                    placeholder="Ej: Pollo con arroz",
+                    key="image_food_name"
+                )
+            
+            # === SECCIÓN 3: CANTIDAD Y CALORÍAS ===
+            st.subheader("⚖️ Cantidad y Calorías")
+            
+            quantity_option = st.radio(
+                "¿Cómo prefieres indicar la cantidad? *",
+                ["Gramos", "Descripción conversacional", "Ambas"],
+                key="image_quantity_option"
+            )
+            
+            quantity = None
+            quantity_description = None
+            
+            col1, col2 = st.columns(2)
+            
+            if quantity_option in ["Gramos", "Ambas"]:
+                with col1:
+                    quantity = st.number_input(
+                        "Cantidad en gramos",
+                        min_value=1,
+                        step=10,
+                        value=100,
+                        key="image_quantity"
+                    )
+            
+            if quantity_option in ["Descripción conversacional", "Ambas"]:
+                with col2 if quantity_option != "Ambas" else col1:
+                    quantity_description = st.text_input(
+                        "Descripción (ej: medio plato, un vaso, 30% del plato)",
+                        placeholder="Ej: Medio plato grande, un vaso de agua",
+                        key="image_quantity_desc_1"
+                    )
+            
+            if quantity_option == "Ambas":
+                with col2:
+                    quantity_description = st.text_input(
+                        "Descripción adicional",
+                        placeholder="Ej: Medio plato grande",
+                        key="image_quantity_desc_2"
+                    )
+            
+            col1, col2 = st.columns(2)
+            with col1:
+                kcal = st.number_input(
+                    "Calorías (kcal) - Opcional",
+                    min_value=0.0,
+                    step=10.0,
+                    value=0.0,
+                    key="image_kcal",
+                    help="Se puede dejar en 0, se rellenará después con los ingredientes"
+                )
+                if kcal == 0.0:
+                    kcal = None
+            
+            # === SECCIÓN 4: SENSACIÓN DESPUÉS DE COMER ===
+            with col2:
+                feeling_scale = st.slider(
+                    "¿Cómo te sientes después? (10-20 min) *",
+                    min_value=1,
+                    max_value=10,
+                    value=5,
+                    key="image_feeling_scale",
+                    help="1 = Con hambre, 10 = Muy hinchado/Saciado"
+                )
+            
+            # === SECCIÓN 5: INGREDIENTES ===
+            st.subheader("🥘 Ingredientes")
+            
+            ingredients_input = st.text_area(
+                "Ingredientes (separados por coma)",
+                placeholder="Ej: pollo, arroz, sal, aceite",
+                height=60,
+                key="image_ingredients"
+            )
+            
+            # === SECCIÓN 6: NOTAS ADICIONALES ===
+            st.subheader("📝 Notas Adicionales")
+            
+            voice_description = st.text_area(
+                "Descripción adicional (notas sobre la comida)",
+                placeholder="Notas sobre la comida...",
+                height=60,
+                key="image_voice_desc"
+            )
+            
+            submitted = st.button("💾 Guardar Ingesta con Imagen", width="stretch")
             
             if submitted:
                 if not food_name:
@@ -340,9 +503,13 @@ class MainApp:
                     st.error("Por favor, ingresa una descripción de la cantidad")
                 else:
                     try:
+                        # Convertir imagen a bytes
+                        image_bytes = io.BytesIO()
+                        image.save(image_bytes, format="PNG")
+                        image_data = image_bytes.getvalue()
+                        
                         # Crear timestamp completo con la fecha actual y hora especificada
                         tz = st.session_state.get("tz", "Europe/Madrid")
-                        
                         # Convertir a UTC para almacenar
                         from bionexo.infrastructure.utils.functions import local_to_utc
                         intake_datetime = local_to_utc(meal_datetime, tz)
@@ -363,204 +530,92 @@ class MainApp:
                             quantity_description=quantity_description,
                             feeling_scale=feeling_scale,
                             ingredients=ingredients if ingredients else None,
+                            image_data=image_data,
                             voice_description=voice_description if voice_description else None
                         )
                         
                         if save_intake(db, intake):
-                            st.success("✅ Ingesta registrada correctamente")
+                            st.success("✅ Ingesta con imagen registrada correctamente")
                             st.balloons()
                         else:
                             st.error("❌ Error al guardar la ingesta")
                     except Exception as e:
                         st.error(f"❌ Error: {str(e)}")
+    
+    @classmethod
+    @st.fragment
+    def register_intake(cls):
+        tab1, tab2 = st.tabs(["Manual", "Con Imagen"])
+        
+        with tab1:
+            cls.register_manual_intake()
         
         with tab2:
-            st.subheader("Registro con Imagen")
-            uploaded_file = st.file_uploader(
-                "Sube una imagen de la comida",
-                type=["jpg", "jpeg", "png", "webp"],
-                help="Formato óptimo: JPG o PNG (máx 10MB)"
-            )
-            
-            if uploaded_file:
-                # Mostrar preview
-                image = Image.open(uploaded_file)
-                st.image(image, caption="Vista previa", use_column_width=True)
-                
-                
-                # === SECCIÓN 1: INFORMACIÓN TEMPORAL ===
-                st.subheader("⏰ Información Temporal")
-                
-                col1, col2 = st.columns(2)
-                with col1:
-                    meal_datetime = st.datetime_input(
-                        "Fecha y hora de la comida *",
-                        format="YYYY-MM-DD",
-                        value=datetime.datetime.now(),
-                        key="image_meal_datetime"
-                    )
-                with col2:
-                    meal_type = st.selectbox(
-                        "Tipo de comida *",
-                        ["Desayuno", "Almuerzo", "Comida", "Cena", "Merienda", "Picar entre horas"],
-                        key="image_meal_type"
-                    )
-                
-                # === SECCIÓN 2: NOMBRE DE LA INGESTA ===
-                st.subheader("🍽️ Seleccionar o Crear Comida")
-                
-                # Obtener comidas previas
-                previous_meals = get_unique_meal_names_from_db(db, st.session_state.get("user_id"))
-                
-                use_previous = st.checkbox("¿Usar una comida guardada previamente?", key="image_use_previous")
-                
-                if use_previous and previous_meals:
-                    food_name = st.selectbox(
-                        "Selecciona una comida anterior *",
-                        previous_meals,
-                        key="image_previous_meals"
-                    )
-                else:
-                    food_name = st.text_input(
-                        "Nombre de la comida *",
-                        placeholder="Ej: Pollo con arroz",
-                        key="image_food_name"
-                    )
-                
-                # === SECCIÓN 3: CANTIDAD Y CALORÍAS ===
-                st.subheader("⚖️ Cantidad y Calorías")
-                
-                quantity_option = st.radio(
-                    "¿Cómo prefieres indicar la cantidad? *",
-                    ["Gramos", "Descripción conversacional", "Ambas"],
-                    key="image_quantity_option"
-                )
-                
-                quantity = None
-                quantity_description = None
-                
-                col1, col2 = st.columns(2)
-                
-                if quantity_option in ["Gramos", "Ambas"]:
-                    with col1:
-                        quantity = st.number_input(
-                            "Cantidad en gramos",
-                            min_value=1,
-                            step=10,
-                            value=100,
-                            key="image_quantity"
-                        )
-                
-                if quantity_option in ["Descripción conversacional", "Ambas"]:
-                    with col2 if quantity_option != "Ambas" else col1:
-                        quantity_description = st.text_input(
-                            "Descripción (ej: medio plato, un vaso, 30% del plato)",
-                            placeholder="Ej: Medio plato grande, un vaso de agua",
-                            key="image_quantity_desc_1"
-                        )
-                
-                if quantity_option == "Ambas":
-                    with col2:
-                        quantity_description = st.text_input(
-                            "Descripción adicional",
-                            placeholder="Ej: Medio plato grande",
-                            key="image_quantity_desc_2"
-                        )
-                
-                col1, col2 = st.columns(2)
-                with col1:
-                    kcal = st.number_input(
-                        "Calorías (kcal) - Opcional",
-                        min_value=0.0,
-                        step=10.0,
-                        value=0.0,
-                        key="image_kcal",
-                        help="Se puede dejar en 0, se rellenará después con los ingredientes"
-                    )
-                    if kcal == 0.0:
-                        kcal = None
-                
-                # === SECCIÓN 4: SENSACIÓN DESPUÉS DE COMER ===
-                with col2:
-                    feeling_scale = st.slider(
-                        "¿Cómo te sientes después? (10-20 min) *",
-                        min_value=1,
-                        max_value=10,
-                        value=5,
-                        key="image_feeling_scale",
-                        help="1 = Con hambre, 10 = Muy hinchado/Saciado"
-                    )
-                
-                # === SECCIÓN 5: INGREDIENTES ===
-                st.subheader("🥘 Ingredientes")
-                
-                ingredients_input = st.text_area(
-                    "Ingredientes (separados por coma)",
-                    placeholder="Ej: pollo, arroz, sal, aceite",
-                    height=60,
-                    key="image_ingredients"
-                )
-                
-                # === SECCIÓN 6: NOTAS ADICIONALES ===
-                st.subheader("📝 Notas Adicionales")
-                
-                voice_description = st.text_area(
-                    "Descripción adicional (notas sobre la comida)",
-                    placeholder="Notas sobre la comida...",
-                    height=60,
-                    key="image_voice_desc"
-                )
-                
-                submitted = st.button("💾 Guardar Ingesta con Imagen", width="stretch")
-                
-                if submitted:
-                    if not food_name:
-                        st.error("Por favor, ingresa el nombre de la comida")
-                    elif quantity_option != "Descripción conversacional" and not quantity:
-                        st.error("Por favor, ingresa la cantidad en gramos")
-                    elif quantity_option != "Gramos" and not quantity_description:
-                        st.error("Por favor, ingresa una descripción de la cantidad")
-                    else:
-                        try:
-                            # Convertir imagen a bytes
-                            image_bytes = io.BytesIO()
-                            image.save(image_bytes, format="PNG")
-                            image_data = image_bytes.getvalue()
-                            
-                            # Crear timestamp completo con la fecha actual y hora especificada
-                            tz = st.session_state.get("tz", "Europe/Madrid")
-                            # Convertir a UTC para almacenar
-                            from bionexo.infrastructure.utils.functions import local_to_utc
-                            intake_datetime = local_to_utc(meal_datetime, tz)
-                            
-                            ingredients = [
-                                ing.strip() for ing in ingredients_input.split(",")
-                                if ing.strip()
-                            ] if ingredients_input else None
-                            
-                            intake = Intake(
-                                user_id=st.session_state.get("user_id"),
-                                food_name=food_name,
-                                quantity=quantity,
-                                kcal=kcal,
-                                timestamp=intake_datetime,
-                                meal_type=meal_type,
-                                quantity_type=quantity_option,
-                                quantity_description=quantity_description,
-                                feeling_scale=feeling_scale,
-                                ingredients=ingredients if ingredients else None,
-                                image_data=image_data,
-                                voice_description=voice_description if voice_description else None
-                            )
-                            
-                            if save_intake(db, intake):
-                                st.success("✅ Ingesta con imagen registrada correctamente")
-                                st.balloons()
-                            else:
-                                st.error("❌ Error al guardar la ingesta")
-                        except Exception as e:
-                            st.error(f"❌ Error: {str(e)}")
+            cls.register_image_intake()
 
+
+    @staticmethod
+    def intake_card(intake: Intake):
+        with st.container(border=True, width=200):
+            with st.container(horizontal=True):
+                st.write(f"**{intake.meal_type}**")
+                st.caption(f"📅 {intake.timestamp.strftime('%Y-%m-%d %H:%M') if hasattr(intake.timestamp, 'strftime') else intake.timestamp}")
+            
+            st.write(f"**{intake.food_name}**")
+            ingredients  = intake.ingredients or []
+            ingredients_str = []
+            for ingredient in ingredients:
+                ingredients_str.append(f"- {ingredient}")
+            st.caption("\n".join(ingredients_str))
+
+    @classmethod
+    @st.fragment
+    def intakes_history(cls, intakes: List[Intake]):
+        st.subheader("📋 Historial de Ingestas")
+        from bionexo.infrastructure.utils.functions import utc_to_local
+        from collections import defaultdict
+        
+        if not intakes:
+            st.info("No hay ingestas registradas aún.")
+            return
+        
+        tz = st.session_state.get("tz", "Europe/Madrid")
+        
+        # Agrupar ingestas por fecha
+        intakes_by_day = defaultdict(list)
+        for intake in intakes:
+            ts = getattr(intake, "timestamp", None)
+            if hasattr(ts, "strftime"):
+                local_ts = utc_to_local(ts, tz)
+                day_key = local_ts.strftime("%Y-%m-%d")
+            else:
+                day_key = str(ts).split()[0]
+            intakes_by_day[day_key].append(intake)
+        
+        # Mostrar por días (ordenados de más reciente a más antiguo)
+        for day_key in sorted(intakes_by_day.keys(), reverse=True):
+            day_intakes = intakes_by_day[day_key]
+            
+            # Ordenar ingestas por hora (de menor a mayor)
+            day_intakes.sort(key=lambda intake: (
+                utc_to_local(intake.timestamp, tz).time() 
+                if hasattr(intake.timestamp, "strftime") 
+                else "00:00"
+            ))
+            
+            # Encabezado del día
+            st.subheader(f"📅 {day_key}")
+            
+            # Distribuir tarjetas en columnas (4 tarjetas por fila)
+            cols_per_row = 4
+            for i in range(0, len(day_intakes), cols_per_row):
+                cols = st.columns(min(cols_per_row, len(day_intakes) - i))
+                for col_idx, col in enumerate(cols):
+                    if i + col_idx < len(day_intakes):
+                        with col:
+                            cls.intake_card(day_intakes[i + col_idx])
+            
+            st.divider()
 
     def main(self):
         st.title("Bionexo - Seguimiento Nutricional")
@@ -584,13 +639,10 @@ class MainApp:
         st.session_state["tz"] = user_tz
 
         # Sidebar para navegación
-        menu = st.sidebar.selectbox("Menú", ["Perfil", "Registrar Ingesta", "Registrar Bienestar", "Historial", "Análisis"])
-
-        if menu == "Perfil":
-            st.header("Perfil de Usuario")
+        menu = st.sidebar.selectbox("Menú", ["Registrar Ingesta", "Registrar Bienestar", "Historial", "Análisis"])
+    
             
-            
-        elif menu == "Registrar Ingesta":
+        if menu == "Registrar Ingesta":
             st.header("Registrar Ingesta de Alimentos")
             self.register_intake()
 
@@ -888,12 +940,14 @@ class MainApp:
                 intakes = get_intakes_from_db(db, st.session_state.get("user_id"), limit=100)
                 
                 if intakes:
+
+                    self.intakes_history(intakes)
                     # Convertir a DataFrame para mejor visualización
                     display_data = []
                     from bionexo.infrastructure.utils.functions import utc_to_local
                     tz = st.session_state.get("tz", "Europe/Madrid")
                     for intake in intakes:
-                        ts = intake.get("timestamp")
+                        ts = getattr(intake, "timestamp", None)
                         if hasattr(ts, "strftime"):
                             local_ts = utc_to_local(ts, tz)
                             date_str = local_ts.strftime("%Y-%m-%d %H:%M")
@@ -901,12 +955,12 @@ class MainApp:
                             date_str = ts
                         display_data.append({
                             "Fecha": date_str,
-                            "Tipo": intake.get("meal_type", "-"),
-                            "Alimento": intake.get("food_name"),
-                            "Cantidad": f"{intake.get('quantity')}g" if intake.get("quantity") else (intake.get("quantity_description", "-")),
-                            "Calorías": f"{intake.get('kcal')}" if intake.get("kcal") else "Pendiente",
-                            "Sensación": f"{intake.get('feeling_scale', '-')}/10" if intake.get("feeling_scale") else "-",
-                            "Imagen": "✅" if intake.get("image_data") else "❌"
+                            "Tipo": getattr(intake, "meal_type", "-"),
+                            "Alimento": intake.food_name,
+                            "Cantidad": f"{intake.quantity}g" if intake.quantity else (getattr(intake, "quantity_description", "-")),
+                            "Calorías": f"{intake.kcal}" if intake.kcal else "Pendiente",
+                            "Sensación": f"{getattr(intake, 'feeling_scale', '-')}/10" if getattr(intake, 'feeling_scale', None) is not None else "-",
+                            "Imagen": "✅" if getattr(intake, "image_data", None) else "❌"
                         })
                     
                     df = pd.DataFrame(display_data)
@@ -917,8 +971,8 @@ class MainApp:
                     st.subheader("📊 Estadísticas")
                     col1, col2, col3 = st.columns(3)
                     
-                    total_kcal = sum([intake.get("kcal", 0) for intake in intakes if intake.get("kcal")])
-                    intakes_with_kcal = [intake for intake in intakes if intake.get("kcal")]
+                    total_kcal = sum([getattr(intake, "kcal", 0) for intake in intakes if getattr(intake, "kcal", None) is not None])
+                    intakes_with_kcal = [intake for intake in intakes if getattr(intake, "kcal", None) is not None]
                     avg_kcal = total_kcal / len(intakes_with_kcal) if intakes_with_kcal else 0
                     total_meals = len(intakes)
                     
