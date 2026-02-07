@@ -19,11 +19,10 @@ from bionexo.infrastructure.utils.functions import hash_password, utc_to_local
 
 class MainApp:
     def __init__(self):
-        self.db = self.get_db_connection()
         st.set_page_config(
             page_title="Bionexo - Seguimiento Nutricional",
             page_icon="🍽️",
-            layout="centered",
+            layout="wide",
             initial_sidebar_state="expanded",
             menu_items={
                 'About': "Aplicación desarrollada por el equipo de Bionexo."
@@ -41,25 +40,56 @@ class MainApp:
         else:
             self.main()
 
+    @st.fragment
     def login(self):
-        st_login_tab, st_register_tab = st.tabs(["Iniciar Sesión", "Registrarse"])
-        with st_login_tab:
-            st.title("Bionexo - Login")
-            email = st.text_input("Email")
-            password = st.text_input("Contraseña", type="password")
-            if st.button("Iniciar Sesión"):
-                if db_user_exists(self.db, email, password):
-                    st.session_state["logged"] = True
-                    st.session_state["user_id"] = email
-                    st.rerun()
-                else:
-                    st.error("Credenciales incorrectas")
+        db = self.get_db_connection()
+        sign_type = st.session_state.get("sign_type", "login")
+        container_width = 400
+        if sign_type == "register":
+            container_width = "stretch"
 
-        with st_register_tab:
-            self.register()
+            sign_type_register = st.segmented_control(
+                "", ["login", "register"],
+                default=st.session_state.get("sign_type", "login"),
+                label_visibility="collapsed",
+                key="sign_type_register",
+                format_func=lambda x: "Iniciar Sesión" if x == "login" else "Registrarse"
+            )
+            if sign_type_register == "login":
+                st.session_state["sign_type"] = sign_type_register
+                st.rerun(scope="fragment")
+
+        with st.container(horizontal_alignment="center"):
+            with st.container(width=container_width):
+                if sign_type == "login":
+                    st.title("Bionexo - Login")
+                    with st.form("login_form"):
+                        email = st.text_input("Email")
+                        password = st.text_input("Contraseña", type="password")
+                        if st.form_submit_button("Iniciar Sesión"):
+                            if db_user_exists(db, email, password):
+                                st.session_state["logged"] = True
+                                st.session_state["user_id"] = email
+                                st.rerun()
+                            else:
+                                st.error("Credenciales incorrectas")
+                else:
+                    self.register()
+                
+                if sign_type == "login":
+                    sign_type = st.segmented_control(
+                        "", ["login", "register"],
+                        default=st.session_state.get("sign_type", "login"),
+                        label_visibility="collapsed",
+                        format_func=lambda x: "Iniciar Sesión" if x == "login" else "Registrarse"
+                    )
+                    if st.session_state.get("sign_type") != sign_type:
+                        st.session_state["sign_type"] = sign_type
+                        st.rerun(scope="fragment")
         
+
+    @st.fragment
     def register(self):
-        st.title("Bionexo - Registro")
         db = self.get_db_connection()
         with st.form("profile_form"):
             # === SECCIÓN 1: INFORMACIÓN PERSONAL ===
@@ -210,10 +240,9 @@ class MainApp:
                     except Exception as e:
                         st.error(f"❌ Error al guardar el perfil: {str(e)}")
 
-    @classmethod
     @st.fragment
-    def register_manual_intake(cls):
-        db = get_db()
+    def register_manual_intake(self):
+        db = self.get_db_connection()
         with st.container():
             # === SECCIÓN 1: INFORMACIÓN TEMPORAL ===
             st.subheader("⏰ Información Temporal")
@@ -351,10 +380,9 @@ class MainApp:
                 except Exception as e:
                     st.error(f"❌ Error: {str(e)}")
 
-    @classmethod
     @st.fragment
-    def register_image_intake(cls):
-        db = get_db()
+    def register_image_intake(self):
+        db = self.get_db_connection()
         st.subheader("Registro con Imagen")
         uploaded_file = st.file_uploader(
             "Sube una imagen de la comida",
@@ -540,16 +568,15 @@ class MainApp:
                     except Exception as e:
                         st.error(f"❌ Error: {str(e)}")
     
-    @classmethod
     @st.fragment
-    def register_intake(cls):
+    def register_intake(self):
         tab1, tab2 = st.tabs(["Manual", "Con Imagen"])
         
         with tab1:
-            cls.register_manual_intake()
+            self.register_manual_intake()
         
         with tab2:
-            cls.register_image_intake()
+            self.register_image_intake()
 
 
     @staticmethod
@@ -567,9 +594,8 @@ class MainApp:
                 ingredients_str.append(f"- {ingredient}")
             st.caption("\n".join(ingredients_str))
 
-    @classmethod
     @st.fragment
-    def intakes_history(cls, intakes: List[Intake]):
+    def intakes_history(self, intakes: List[Intake]):
         st.subheader("📋 Historial de Ingestas")
         from bionexo.infrastructure.utils.functions import utc_to_local
         from collections import defaultdict
@@ -612,7 +638,7 @@ class MainApp:
                 for col_idx, col in enumerate(cols):
                     if i + col_idx < len(day_intakes):
                         with col:
-                            cls.intake_card(day_intakes[i + col_idx])
+                            self.intake_card(day_intakes[i + col_idx])
             
             st.divider()
 
